@@ -1,2 +1,12 @@
 language: cpp
-script: mkdir build && cd build && cmake .. && make && ./durian_test
+install: true
+notifications:
+  email: false
+
+install:
+  - git submodule update --init --recursive
+  - mkdir build ; cd build ; cmake ..
+  - make
+
+script:
+  - ./durian_test
