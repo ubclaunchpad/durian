@@ -1,2 +1,26 @@
 language: cpp
-script: mkdir build && cd build && cmake .. && make
+install: true
+notifications:
+  email: false
+
+# The following additions force more modern lstdc++ libs
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-trusty-5.0
+      - ubuntu-toolchain-r-test
+    packages:
+      - clang-5.0
+      - g++-7
+compiler:
+  - clang # todo: choose compiler
+env:
+  - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+install:
+  - git submodule update --init --recursive
+
+script:
+  - mkdir build ; cd build ; cmake ..
+  - make
+  - ./durian_test
