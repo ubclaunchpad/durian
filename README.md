@@ -1,5 +1,9 @@
 # 🍍 durian
 
+## Anatomy of a Durian
+
+![durian](https://1.bp.blogspot.com/-jJ5DtPM9oyU/VYQpCLwgUHI/AAAAAAAADYY/SHDM56_cm98/s400/cross-section%2B6-7%2Bwk%2Bdurian.jpg)
+
 ## Dependencies
 
 ```bash
