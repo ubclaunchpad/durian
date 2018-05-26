@@ -1,2 +1,91 @@
-do :: hunger++ :: while [ chicken = true ]
+#!
+    This is an example durian program, or "carpel". Durians are divided into
+    5 compartments representing the five carpels from which the fruit develops.
 
+    Example run:
+        $ durian example.dur shit
+
+                 88                        88                         
+                 88                        ""                         
+                 88                                                   
+         ,adPPYb,88 88       88 8b,dPPYba, 88 ,adPPYYba, 8b,dPPYba,   
+        a8"    `Y88 88       88 88P'   "Y8 88 ""     `Y8 88P'   `"8a  
+        8b       88 88       88 88         88 ,adPPPPP88 88       88  
+        "8a,   ,d88 "8a,   ,a88 88         88 88,    ,88 88       88  
+         `"8bbdP"Y8  `"YbbdP'Y8 88         88 `"8bbdP"Y8 88       88
+        @ UBC Launch Pad 2018!
+
+        thiabaud is eaten! russel is eaten! tom is eaten! robert is eaten!
+        Delicious!
+        Yikes!
+        BLURGHHHH
+!#
+
+out("""
+
+         88                        88                         
+         88                        ""                         
+         88                                                   
+ ,adPPYb,88 88       88 8b,dPPYba, 88 ,adPPYYba, 8b,dPPYba,   
+a8"    `Y88 88       88 88P'   "Y8 88 ""     `Y8 88P'   `"8a  
+8b       88 88       88 88         88 ,adPPPPP88 88       88  
+"8a,   ,d88 "8a,   ,a88 88         88 88,    ,88 88       88  
+ `"8bbdP"Y8  `"YbbdP'Y8 88         88 `"8bbdP"Y8 88       88
+
+@ UBC Launch Pad 2018!
+
+""")
+
+def DurianSwallower(durian : String) : Bool {
+    # Durian swallowing never fails baby
+    return true
+}
+
+command : String = in::parseString(1)
+sushi : Bool = false
+sashimi : Bool = false
+
+def EatDurian {
+    if EatDurianHelper("thiabaud", "russel", "tom", "robert", $DurianSwallower) {
+        out("Delicious!\n")
+    } elif (sushi or sashimi) {
+        out("I think I prefer sushi or sashimi\n")
+    }
+
+    match (command) {
+        : "shit" {
+            out("Yikes\n")
+            cont
+        }
+        : "vommit" {
+            out("BLURGHHHH\n")
+        }
+        : "cry" {
+            out("oh my god\n")
+        }
+        default {
+            out("that was amazing!\n")
+        }
+    }
+}
+
+def EatDurianHelper(durians : ...String, callback : (String) : Bool) : Bool {
+    success : Bool = false
+    for (i : Int = 0 ; i lt durian::length ; i::inc) {
+        durian::[i]::concat(" is eaten! ")
+        out(durian::[i])
+        success = callback(durian::[i])
+    }
+    return success
+}
+
+# Execute function
+EatDurian
+
+#!
+    Other things to consider:
+    - namespacing?
+        ovule "./mylib.dur" : myLib
+        myLib::MyFunction(...)
+    - optional params?
+!#
