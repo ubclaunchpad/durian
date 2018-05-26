@@ -1,0 +1,213 @@
+# Grammar for the Durian programming language
+
+PROGRAM
+    : COMPSTMT
+    ;
+
+T
+    : "\n"
+    | "\r"
+    ;
+
+COMPSTMT
+    : STMT {T EXPR} [T]
+    ;
+
+SWTHSTMT
+    : "cont"
+    ;
+
+STMT
+    : STMT "if" EXPR
+    | STMT "while" EXPR
+    | EXPR
+    ;
+
+EXPR
+    : ARG
+    | return CALL_ARGS
+    | yield
+    ;
+
+CALL
+    : FUNCTION
+    | COMMAND
+    ;
+
+COMMAND
+    : OPERATION CALL_ARGS
+    : PRIMARY.OPERATION CALL_ARGS
+    ;
+
+FUNCTION
+    : OPERATION [BASIC_CALL]
+    : PRIMARY.OPERATION [BASIC_CALL]
+    ;
+
+BASIC_CALL
+    : "(" [CALL_ARGS] ")"
+    ;
+
+OPERATION
+    : IDENTIFIER
+    ;
+
+ARGS
+    : ARG (, ARG) *
+    ;
+
+ARG
+    : VAR = ARG
+    | ARG ARITH_OP ARG
+    | ARG BOOL_OP ARG
+    | PRIMARY
+    | "!" ARG
+    ;
+
+PRIMARY
+    : "(" COMPSTMT ")"
+    | VARIABLE
+    | PRIMARY "[" LITERAL "]"
+    | FUNCTION
+    | "$", FUNCTION
+    | return ["(" [CALL_ARGS] ")"]
+    | "if" EXPR DO
+        COMPSTMT
+      {"elif" EXPR DO
+        COMPSTMT}
+      ["else" DO
+        COMPSTMT]
+      END
+    | "while" EXPR DO COMPSTMT END
+    | "for" BLOCK_VAR "in" EXPR DO
+        COMPSTMT
+      END
+    | "def" IDENTIFIER PARAMS RETURNS DO
+        COMPSTMT
+      END
+    | "match" PARAM DO
+        {":" PARAM DO
+          COMPSTMT
+          [SWTHSTMT]
+        END}
+        ["default" DO
+          COMPSTMT]
+      END
+    | "try" DO
+        COMPSTMT
+      "catch" DO
+        COMPSTMT
+      END
+    ;
+
+LINE_COMMENT
+    : "#" IDENTIFIER
+    ;
+
+LONG_COMMENT
+    : "#!" IDENTIFIER "!#"
+    ;
+
+ASSIGN
+    : VARIABLE " : " TYPE "=" ARG
+    ;
+
+BLOCK_VAR
+    : "(" VARIABLE ";" ARG ";" FUNCTION ")"
+    ;
+
+CALL_ARGS
+    : ARGS
+    | COMMAND
+    ;
+
+IOSTMT
+    : "in" PARAMS
+    : "out" PARAM
+    : "outln" PARAM
+    ;
+
+LHS
+    : VARIABLE
+    | PRIMARY
+    | PRIMARY.IDENTIFIER
+    ;
+
+LITERAL
+    : NUMERIC
+    | STRING
+    ;
+
+VARIABLE
+    : IDENTIFIER
+    | "None"
+    | "self"
+    ;
+
+RETURNS
+    : ":" [TYPE [,]]
+    ;
+
+PARAMS
+    : [PARAM]
+    ;
+
+PARAM
+    : "(" [CALL_ARGS] ")"
+    ;
+
+DO
+    : "{"
+    | T "{"
+    ;
+
+END
+    : "}"
+    ;
+
+IDENTIFIER
+    : /[a-zA-Z_]/, {/[a-zA-Z0-9_]/}
+    ;
+
+NUMERIC
+    : /[0-9]+/
+    ;
+
+STRING
+    : "\"" /[a-zA-Z_]+/ "\""
+    ;
+
+ARITH_OP
+    : "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "**"
+    ;
+
+BOOL_OP
+    : "=="
+    | "!="
+    | "&&"
+    | "||"
+    | ">"
+    | ">="
+    | "<"
+    | "<="
+    | "gt"
+    | "gte"
+    | "lt"
+    | "lte"
+    | "or"
+    | "and"
+    | "xor"
+    | "nand"
+    | "! "
+    ;
+
+BIT_OP
+    : "&"
+    | "|"
+    | "^"
+    ;
