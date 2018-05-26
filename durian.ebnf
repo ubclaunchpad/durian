@@ -1,4 +1,4 @@
-# Grammar for the Durian programming language
+(* Grammar for the Durian programming language *)
 
 PROGRAM
     : COMPSTMT
@@ -10,23 +10,88 @@ T
     ;
 
 COMPSTMT
-    : STMT {T EXPR} [T]
-    ;
-
-SWTHSTMT
-    : "cont"
+    : STMT {T STMT} [T]
     ;
 
 STMT
     : STMT "if" EXPR
     | STMT "while" EXPR
+    | "return" EXPR
+    | yield CALL_ARGS
     | EXPR
+    | IFSTMT
+    | WHILESTMT
+    | FORSTMT
+    | DEFSTMT
+    | SWTHSTMT
+    | TRYSTMT
+    | IOSTMT
+    ;
+
+IFSTMT
+    : "if" EXPR DO
+        COMPSTMT
+      {"elif" EXPR DO
+        COMPSTMT}
+      ["else" DO
+        COMPSTMT]
+      END
+    ;
+
+WHILESTMT
+    : "while" EXPR DO COMPSTMT END
+    ;
+
+FORSTMT
+    : "for" BLOCK_VAR DO
+        COMPSTMT
+      END
+    | "for" VARIABLE "in" EXPR DO
+        COMPSTMT
+      END
+    ;
+
+DEFSTMT
+    : "def" IDENTIFIER OPT_PARAMS RETURNS DO
+        COMPSTMT
+      END
+    ;
+
+SWTHSTMT
+    : "match" PARAMS DO
+        {":" VARIABLE DO
+          COMPSTMT
+          [SWTHFN]
+        END}
+        ["default" DO
+          COMPSTMT
+        END]
+      END
+    ;
+
+TRYSTMT
+    : "try" DO
+        COMPSTMT
+      END
+      "catch" DO
+        COMPSTMT
+      END
+    ;
+
+IOSTMT
+    : "in" PARAMS
+    : "out" PARAM
+    : "outln" PARAM
     ;
 
 EXPR
     : ARG
-    | return CALL_ARGS
-    | yield
+    | CALL_ARGS
+    | ASSIGN
+    ;
+
+SWTHFN
+    : "cont"
     ;
 
 CALL
@@ -36,12 +101,12 @@ CALL
 
 COMMAND
     : OPERATION CALL_ARGS
-    : PRIMARY.OPERATION CALL_ARGS
+    : PRIMARY::OPERATION CALL_ARGS
     ;
 
 FUNCTION
     : OPERATION [BASIC_CALL]
-    : PRIMARY.OPERATION [BASIC_CALL]
+    : PRIMARY, "::" ,OPERATION [BASIC_CALL]
     ;
 
 BASIC_CALL
@@ -52,52 +117,41 @@ OPERATION
     : IDENTIFIER
     ;
 
+OPT_PARAMS
+    : [PARAMS]
+    ;
+
+PARAMS
+    : "(" [CALL_ARGS] ")"
+    ;
+
+CALL_ARGS
+    : ARGS
+    | COMMAND
+    ;
+
 ARGS
     : ARG (, ARG) *
     ;
 
 ARG
-    : VAR = ARG
+    : LHS = ARG
     | ARG ARITH_OP ARG
     | ARG BOOL_OP ARG
+    | ARG BIT_OP ARG
     | PRIMARY
-    | "!" ARG
+    | "!", ARG
     ;
 
 PRIMARY
     : "(" COMPSTMT ")"
+    | ASSIGN
     | VARIABLE
+    | STMT
     | PRIMARY "[" LITERAL "]"
     | FUNCTION
     | "$", FUNCTION
     | return ["(" [CALL_ARGS] ")"]
-    | "if" EXPR DO
-        COMPSTMT
-      {"elif" EXPR DO
-        COMPSTMT}
-      ["else" DO
-        COMPSTMT]
-      END
-    | "while" EXPR DO COMPSTMT END
-    | "for" BLOCK_VAR "in" EXPR DO
-        COMPSTMT
-      END
-    | "def" IDENTIFIER PARAMS RETURNS DO
-        COMPSTMT
-      END
-    | "match" PARAM DO
-        {":" PARAM DO
-          COMPSTMT
-          [SWTHSTMT]
-        END}
-        ["default" DO
-          COMPSTMT]
-      END
-    | "try" DO
-        COMPSTMT
-      "catch" DO
-        COMPSTMT
-      END
     ;
 
 LINE_COMMENT
@@ -112,25 +166,19 @@ ASSIGN
     : VARIABLE " : " TYPE "=" ARG
     ;
 
+TYPE
+    : /[A-Z]/, {/[a-zA-Z]/}
+    : "...", TYPE
+    ;
+
 BLOCK_VAR
     : "(" VARIABLE ";" ARG ";" FUNCTION ")"
-    ;
-
-CALL_ARGS
-    : ARGS
-    | COMMAND
-    ;
-
-IOSTMT
-    : "in" PARAMS
-    : "out" PARAM
-    : "outln" PARAM
     ;
 
 LHS
     : VARIABLE
     | PRIMARY
-    | PRIMARY.IDENTIFIER
+    | PRIMARY::IDENTIFIER
     ;
 
 LITERAL
@@ -145,15 +193,7 @@ VARIABLE
     ;
 
 RETURNS
-    : ":" [TYPE [,]]
-    ;
-
-PARAMS
-    : [PARAM]
-    ;
-
-PARAM
-    : "(" [CALL_ARGS] ")"
+    : [":" TYPE]
     ;
 
 DO
