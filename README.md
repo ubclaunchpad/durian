@@ -1,4 +1,10 @@
-# durian
+# 🍍 durian
+
+## Dependencies
+
+```bash
+git submodule update --init --recursive
+```
 
 ## Building
 
@@ -8,7 +14,7 @@ and you should be able to click the build/run button, which will put build artif
 If you are using a Unix-based system (i.e. Linux or macOS) and you would like to build from the command line,
 you can do so with the following set of commands in the repo's main directory:
 
-```
+```bash
 mkdir build
 cd build/
 cmake ..
