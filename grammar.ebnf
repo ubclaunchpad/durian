@@ -1,15 +1,37 @@
 statement            ::= if_statement
                        | while_statement
+                       | next_statement
+                       | break_statement
+                       | let_statement
+                       | assign_statement
                        | print_statement
+                       | err_statement
                        | scan_statement
                        | function_declaration
                        | return_statement
                        | expr;
 if_statement         ::= "if" expr "{" block_statement "}" 
-                         { "elseif" expr "{" block_statement "}" } 
+                         { "elif" expr "{" block_statement "}" } 
                          [ "else" "{" block_statement "}" ];      
 while_statement      ::= "while" expr "{" block_statement "}";
+next_statement       ::= "next";
+break_statement      ::= "break";
+let_statement        ::= "let" IDENT "=" expr;
+assign_statement     ::= IDENT "=" expr;
 print_statement      ::= "print" expr;
-scan_statement       ::= "scan" ID;
+err_statement        ::= "err" expr;
+scan_statement       ::= "scan" IDENT;
+function_declaration ::= "def" IDENT "(" { IDENT "," } [ IDENT ] ")" "{" block_statement "}";
 return_statement     ::= "return" expr;
-block_statement      ::= { statement NL };
+expr                 ::= literal
+                       | unary_expr
+                       | binary_expr
+                       | group;
+block_statement      ::= { statement eol };
+literal              ::= "true" | "false" | DIGITS | DIGITS "." DIGITS | STRING;
+unary_expr           ::= unary_op expr;
+binary_expr          ::= expr binary_op expr;
+group                ::= "(" expr ")";
+unary_op             ::= "+" | "-" | "&" | "!";
+binary_op            ::= "+" | "-" | "*" | "/" | "&" | "<=" | ">=" | "==" | "!=" | "and" | "or";
+eol                  ::= "\r\n";
