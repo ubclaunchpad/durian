@@ -1,0 +1,82 @@
+#!
+    This is an example durian program, or "carpel". Durians are divided into
+    5 compartments representing the five carpels from which the fruit develops.
+
+    Example run:
+        $ durian example.dur shit
+
+                 88                        88
+                 88                        ""
+                 88
+         ,adPPYb,88 88       88 8b,dPPYba, 88 ,adPPYYba, 8b,dPPYba,
+        a8"    `Y88 88       88 88P'   "Y8 88 ""     `Y8 88P'   `"8a
+        8b       88 88       88 88         88 ,adPPPPP88 88       88
+        "8a,   ,d88 "8a,   ,a88 88         88 88,    ,88 88       88
+         `"8bbdP"Y8  `"YbbdP'Y8 88         88 `"8bbdP"Y8 88       88
+        @ UBC Launch Pad 2018!
+
+        thiabaud is eaten!
+        Delicious!
+        Yikes!
+!#
+
+print """
+
+         88                        88
+         88                        ""
+         88
+ ,adPPYb,88 88       88 8b,dPPYba, 88 ,adPPYYba, 8b,dPPYba,
+a8"    `Y88 88       88 88P'   "Y8 88 ""     `Y8 88P'   `"8a
+8b       88 88       88 88         88 ,adPPPPP88 88       88
+"8a,   ,d88 "8a,   ,a88 88         88 88,    ,88 88       88
+ `"8bbdP"Y8  `"YbbdP'Y8 88         88 `"8bbdP"Y8 88       88
+
+@ UBC Launch Pad 2018!
+
+"""
+
+def DurianSwallower(durian : String) : Bool {
+    # Durian swallowing never fails baby
+    return true
+}
+
+let command
+let sushi = false
+let sashimi = false
+
+scan command
+
+def EatDurian() {
+    if EatDurianHelper("thiabaud", DurianSwallower) {
+        print "Delicious!\n"
+    } elif sushi or sashimi {
+        print "I think I prefer sushi or sashimi\n"
+    }
+
+    if command == "shit" {
+        print "Yikes\n"
+    } elif command == "vommit" {
+        print "BLURGHHHH\n"
+    } elif command == "cry" {
+        print "oh my god\n"
+    } else {
+        print "that was amazing!\n"
+    }
+}
+
+def EatDurianHelper(durian, callback) {
+    print durian&" is eaten!"
+    let success = callback(durian)
+    return success
+}
+
+# Execute function
+EatDurian()
+
+#!
+    Other things to consider:
+    - namespacing?
+        ovule "./mylib.dur" : myLib
+        myLib::MyFunction(...)
+    - optional params?
+!#
