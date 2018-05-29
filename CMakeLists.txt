@@ -9,7 +9,7 @@ add_subdirectory(googletest/)
 
 set(SOURCE_FILES
         src/lexer/Lexer.cpp
-        src/ExampleClass.cpp)
+        src/interpreter/vm/VM.cpp)
 
 set(TEST_FILES
         test/main.cpp)
