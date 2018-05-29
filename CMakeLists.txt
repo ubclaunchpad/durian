@@ -8,7 +8,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/include)
 add_subdirectory(googletest/)
 
 set(SOURCE_FILES
-        src/ExampleClass.cpp)
+        src/interpreter/vm/VM.cpp)
 
 set(TEST_FILES
         test/main.cpp)
