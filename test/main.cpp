@@ -1,11 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <ExampleClass.h>
+
 #include <Lexer.h>
 
-TEST(TestExClass, TestRetOne) {
-    EXPECT_EQ(ExampleClass::returnOne(), 1);
-}
 
 TEST(TestLexer, TestSingleComma) {
     Lexer lexer(",");
