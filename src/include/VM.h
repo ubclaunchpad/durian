@@ -6,14 +6,14 @@
 
 class VM {
     public:
-        VM(char *);
+        VM(unsigned char *);
         ~VM();
         int run();
     private:
         int pc;         // Program Counter
         int sp;         // Stack Pointer
-        char* code;     // Pointer to bytecode
-        double* stack;  // Stack
+        unsigned char *code;     // Pointer to bytecode
+        double *stack;  // Stack
         const int STACK_SIZE = 256;
 
         void push(double);
