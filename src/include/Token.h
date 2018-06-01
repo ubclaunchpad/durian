@@ -20,13 +20,13 @@ enum struct TokenType {
     Def, Let, Equal, Identifier,
 
     // Control-flow keywords
-    Bang, And, Or, If, Else, Elif, While, Return, Next, Break,
+    Bang, If, Else, Elif, While, Return, Next, Break,
 
     // I/O keywords
     Print, Scan, Err,
 
     // File tokens
-    EOL, EOF
+    EOL, END
 };
 
 struct Token {
