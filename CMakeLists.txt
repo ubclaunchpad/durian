@@ -12,7 +12,7 @@ set(SOURCE_FILES
         src/interpreter/vm/VM.cpp)
 
 set(TEST_FILES
-        test/main.cpp)
+        test/main.cpp src/include/DurianObject.h)
 
 add_executable(durian
         src/main.cpp

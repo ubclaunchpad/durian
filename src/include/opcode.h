@@ -1,7 +1,7 @@
 #ifndef DURIAN_OPCODE_H
 #define DURIAN_OPCODE_H
 
-enum Opcode {
+enum struct Opcode : unsigned char {
   NOP     = 0x00,  // pass
   ADD     = 0x60,  // add top two elements on stack, push result back onto stack.
   SUB     = 0x61,  // subtract top two elements on stack, push result back onto stack.

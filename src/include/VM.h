@@ -1,5 +1,7 @@
 #pragma once
 
+#include <DurianObject.h>
+
 #ifndef DURIAN_VM_H
 #define DURIAN_VM_H
 
@@ -10,14 +12,13 @@ class VM {
         ~VM();
         int run();
     private:
-        int pc;         // Program Counter
-        int sp;         // Stack Pointer
+        int pc;                  // Program Counter
+        int sp;                  // Stack Pointer
         unsigned char *code;     // Pointer to bytecode
-        double *stack;  // Stack
+        DurianObject stack;      // Stack
         const int STACK_SIZE = 256;
-
-        void push(double);
-        double pop();
+        void push(DurianObject);
+        DurianObject pop();
         unsigned char nextBytecode();
 };
 
