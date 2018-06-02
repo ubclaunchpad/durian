@@ -14,6 +14,9 @@ set(SOURCE_FILES
 set(TEST_FILES
         test/main.cpp src/include/DurianObject.h)
 
+set(TEST_FILES
+        test/TestLexer.cpp)
+
 add_executable(VM
         ${PROJECT_SOURCE_DIR}/src/interpreter/main.cpp
         ${PROJECT_SOURCE_DIR}/src/interpreter/vm/VM.cpp
