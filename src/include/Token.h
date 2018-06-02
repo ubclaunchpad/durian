@@ -25,8 +25,8 @@ enum struct TokenType {
     // I/O keywords
     Print, Scan, Err,
 
-    // File tokens
-    EOL, END
+    // Control tokens
+    EOL, END, Error
 };
 
 struct Token {
