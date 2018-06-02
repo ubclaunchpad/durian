@@ -10,7 +10,6 @@ class Lexer {
     uint32_t m_line;
 public:
     Lexer(const std::string input);
-
     Token getToken();
 private:
     bool isDigit(const char c);
