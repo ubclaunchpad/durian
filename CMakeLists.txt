@@ -1,23 +1,12 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 project(durian)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 
-include_directories(${PROJECT_SOURCE_DIR}/src/include)
-
-add_subdirectory(googletest/)
-
-set(SOURCE_FILES
-        src/interpreter/vm/VM.cpp)
-
-set(TEST_FILES
-        test/main.cpp src/include/DurianObject.h)
+include_directories(src/include)
 
 add_executable(durian
-        src/main.cpp
-        ${SOURCE_FILES})
-
-add_executable(durian_test
-        ${SOURCE_FILES}
-        ${TEST_FILES})
-target_link_libraries(durian_test gtest_main)
+        src/include/DurianObject.h
+        src/include/opcode.h
+        src/include/VM.h
+        src/interpreter/vm/VM.cpp src/interpreter/vm/DurianObject.cpp)

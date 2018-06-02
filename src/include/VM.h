@@ -15,8 +15,8 @@ class VM {
         int pc;                  // Program Counter
         int sp;                  // Stack Pointer
         unsigned char *code;     // Pointer to bytecode
-        DurianObject stack;      // Stack
-        const int STACK_SIZE = 256;
+        static const int STACK_SIZE = 256;
+        DurianObject stack[STACK_SIZE];      // Stack
         void push(DurianObject);
         DurianObject pop();
         unsigned char nextBytecode();
