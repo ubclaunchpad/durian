@@ -97,3 +97,17 @@ Token Lexer::getToken() {
             return Token {TokenType::Error, m_line, "No matching token for character."};
     }
 }
+
+bool Lexer::isDigit(const char c) {
+    if (isdigit(c) == 0) return false;
+    return true;
+}
+
+bool Lexer::isAlpha(const char c) {
+    if (isalpha(c) == 0) return false;
+    return true;
+}
+
+bool Lexer::isIdentChar(const char c) {
+    return isDigit(c) || isAlpha(c) || c == '_';
+}
