@@ -3,7 +3,15 @@ project(durian)
 
 set(CMAKE_CXX_STANDARD 11)
 
-include_directories(src/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/include)
+
+set(SOURCE_FILES
+        src/lexer/Lexer.cpp)
+
+set(TEST_FILES
+        test/TestLexer.cpp)
+
+add_subdirectory(googletest/)
 
 add_subdirectory(googletest/)
 
@@ -21,3 +29,13 @@ add_executable(VM
         src/interpreter/main.cpp
         src/interpreter/vm/DurianObject.cpp
         src/interpreter/vm/VM.cpp)
+
+add_executable(durian
+        src/main.cpp
+        ${SOURCE_FILES})
+
+add_executable(durian_test
+        ${SOURCE_FILES}
+        ${TEST_FILES})
+
+target_link_libraries(durian_test gtest_main)
