@@ -8,6 +8,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/include)
 add_subdirectory(googletest/)
 
 set(SOURCE_FILES
+        src/lexer/Lexer.cpp
         src/ExampleClass.cpp)
 
 set(TEST_FILES
