@@ -18,10 +18,6 @@ add_executable(VM
         src/interpreter/vm/DurianObject.cpp
         src/interpreter/vm/VM.cpp)
 
-add_executable(durian
-        src/main.cpp
-        ${SOURCE_FILES})
-
 add_executable(durian_test
         ${SOURCE_FILES}
         ${TEST_FILES})
