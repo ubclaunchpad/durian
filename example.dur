@@ -35,7 +35,7 @@ a8"    `Y88 88       88 88P'   "Y8 88 ""     `Y8 88P'   `"8a
 
 """
 
-def DurianSwallower(durian : String) : Bool {
+def DurianSwallower(durian) {
     # Durian swallowing never fails baby
     return true
 }
@@ -48,19 +48,19 @@ scan command
 
 def EatDurian() {
     if EatDurianHelper("thiabaud", DurianSwallower) {
-        print "Delicious!\n"
+        print "Delicious!"
     } elif sushi or sashimi {
-        print "I think I prefer sushi or sashimi\n"
+        print "I think I prefer sushi or sashimi"
     }
 
     if command == "shit" {
-        print "Yikes\n"
+        print "Yikes"
     } elif command == "vommit" {
-        print "BLURGHHHH\n"
+        print "BLURGHHHH"
     } elif command == "cry" {
-        print "oh my god\n"
+        print "oh my god"
     } else {
-        print "that was amazing!\n"
+        print "that was amazing!"
     }
 }
 
