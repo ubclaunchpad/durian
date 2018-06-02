@@ -82,6 +82,7 @@ Token Lexer::getToken() {
                 ++m_iter;
                 return Token {TokenType::EOL, m_line++, ""};
             }
+            // NOTE: apparently \r alone was used in older systems but we uh won't support those
             return Token {TokenType::Error, m_line, "Found carriage return but no newline."};
         case '"':
             while (*(++m_iter) != '"') {
@@ -90,10 +91,60 @@ Token Lexer::getToken() {
             ++m_iter;
             return Token {TokenType::String, m_line, literal};
         default:
-            // TODO check if token is digit or alphabetic
-            // if digit: parse as int or float
-            // if alphabetic: parse until whitespace (?),
-            // then check against list of keywords
-            return Token {TokenType::Error, m_line, "No matching token for character."};
+            const char c = *m_iter;
+            literal += c;
+            if (isDigit(c)) {
+                // numeric literal
+                while (isDigit(*(++m_iter))) {
+                    literal += *m_iter;
+                }
+                if (*m_iter == '.') {
+                    literal += *m_iter;
+                    while (isDigit(*(++m_iter))) {
+                        literal += *m_iter;
+                    }
+                    return Token {TokenType::Float, m_line, literal};
+                } else {
+                    return Token {TokenType::Integer, m_line, literal};
+                }
+            }
+            else if (isAlpha(c)) {
+                // identifier or reserved keyword
+                while (isIdentChar(*(++m_iter))) {
+                    literal += *m_iter;
+                }
+                if (literal == "and") return Token {TokenType::And, m_line, ""};
+                if (literal == "or") return  Token {TokenType::Or, m_line, ""};
+                if (literal == "True") return Token {TokenType::True, m_line, ""};
+                if (literal == "False") return Token {TokenType::False, m_line, ""};
+                if (literal == "def") return Token {TokenType::Def, m_line, ""};
+                if (literal == "let") return Token {TokenType::Let, m_line, ""};
+                if (literal == "if") return Token {TokenType::If, m_line, ""};
+                if (literal == "else") return Token {TokenType::Else, m_line, ""};
+                if (literal == "elif") return Token {TokenType::Elif, m_line, ""};
+                if (literal == "while") return Token {TokenType::While, m_line, ""};
+                if (literal == "return") return Token {TokenType::Return, m_line, ""};
+                if (literal == "next") return Token {TokenType::Next, m_line, ""};
+                if (literal == "break") return Token {TokenType::Break, m_line, ""};
+                if (literal == "print") return Token {TokenType::Print, m_line, ""};
+                if (literal == "scan") return Token {TokenType::Scan, m_line, ""};
+                if (literal == "err") return Token {TokenType::Err, m_line, ""};
+                return Token {TokenType::Identifier, m_line, literal};
+            }
+            return Token {TokenType::Error, m_line, "Unexpected character" };
     }
+}
+
+bool Lexer::isDigit(const char c) {
+    if (isdigit(c) == 0) return false;
+    return true;
+}
+
+bool Lexer::isAlpha(const char c) {
+    if (isalpha(c) == 0) return false;
+    return true;
+}
+
+bool Lexer::isIdentChar(const char c) {
+    return isDigit(c) || isAlpha(c) || c == '_';
 }
