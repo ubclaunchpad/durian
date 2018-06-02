@@ -24,9 +24,15 @@ int VM::run() {
         unsigned char opcode = nextBytecode();
         DurianObject a, b;
         switch (opcode) {
-            case static_cast<unsigned char>(Opcode::HALT): return 0;
-            case static_cast<unsigned char>(Opcode::NOP): break;
-            case static_cast<unsigned char>(Opcode::ADD):
+            case Opcode::HALT: return 0;
+            case Opcode::NOP: break;
+            case Opcode::ICONST_0:
+                push((int64_t)0);
+                break;
+            case Opcode::ICONST_1:
+                push((int64_t)1);
+                break;
+            case Opcode::ADD:
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
@@ -46,7 +52,7 @@ int VM::run() {
                     exit(EXIT_FAILURE);
                 }
                 break;
-            case static_cast<unsigned char>(Opcode::SUB):
+            case Opcode::SUB:
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
@@ -65,7 +71,7 @@ int VM::run() {
                             << "." << std::endl;
                     exit(EXIT_FAILURE);
                 }
-            case static_cast<unsigned char>(Opcode::MUL):
+            case Opcode::MUL:
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
@@ -84,7 +90,7 @@ int VM::run() {
                             << "." << std::endl;
                     exit(EXIT_FAILURE);
                 }
-            case static_cast<unsigned char>(Opcode::FDIV):
+            case Opcode::FDIV:
                 b = pop();
                 a = pop();
                 if (b.type == DurianType::Integer && b.value.ival == 0 ||
@@ -107,7 +113,7 @@ int VM::run() {
                             << "." << std::endl;
                     exit(EXIT_FAILURE);
                 }
-            case static_cast<unsigned char>(Opcode::NEG):
+            case Opcode::NEG:
                 a = pop();
                 if (a.type == DurianType::Integer) {
                     push(-a.value.ival);
@@ -118,6 +124,15 @@ int VM::run() {
                               << a.type
                               << "." << std::endl;
                 }
+                break;
+            case Opcode::PRINT:
+                a = pop();
+                if (a.type == DurianType::Integer)
+                    std::cout << a.value.ival << std::endl;
+                else if (a.type == DurianType::Double)
+                    std::cout << a.value.dval << std::endl;
+                else
+                    std::cout << "Unknown Type";
                 break;
             // More cases here
             default:

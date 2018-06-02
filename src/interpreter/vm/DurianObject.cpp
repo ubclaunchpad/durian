@@ -1,11 +1,6 @@
 #include <DurianObject.h>
 #include <ostream>
 
-char *DurianTypeNames[] = {
-        "double",
-        "int"
-};
-
 DurianObject::DurianObject() {
     type = DurianType::Integer;
     value.ival = 0;
