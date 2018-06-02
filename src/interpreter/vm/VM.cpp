@@ -1,18 +1,20 @@
 #include <VM.h>
-#include <opcode.h>
-#include <cstdlib>
-#include <DurianObject.h>
 
-#include <iostream>
 #include <debug.h>
+#include <DurianObject.h>
+#include <opcode.h>
+
+#include <cstdlib>
+#include <iostream>
 
 
 // Public
 
-VM::VM(unsigned char *bytecode) {
-    pc = 0;
-    sp = -1;
-    code = bytecode;
+VM::VM(unsigned char *bytecode) :
+    m_pc(0),
+    m_sp(-1),
+    m_code(bytecode) {
+    // Do nothing.
 }
 
 VM::~VM() {
@@ -148,13 +150,13 @@ int VM::run() {
 // Private
 
 void VM::push(DurianObject v) {
-    stack[++sp] = v;
+    stack[++m_sp] = v;
 }
 
 DurianObject VM::pop() {
-    return stack[sp--];
+    return stack[m_sp--];
 }
 
 unsigned char VM::nextBytecode() {
-    return code[pc++];
+    return m_code[m_pc++];
 }

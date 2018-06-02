@@ -1,4 +1,5 @@
 #include <DurianObject.h>
+
 #include <ostream>
 
 DurianObject::DurianObject() {
