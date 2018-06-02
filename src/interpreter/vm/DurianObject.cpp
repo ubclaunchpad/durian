@@ -5,11 +5,11 @@ DurianObject::DurianObject() {
     type = DurianType::Integer;
     value.ival = 0;
 }
+
 DurianObject::DurianObject(double dval) {
     type = DurianType::Double;
     value.dval = dval;
 }
-
 
 DurianObject::DurianObject(int64_t ival)  {
     type = DurianType::Integer;
@@ -26,4 +26,6 @@ std::ostream &operator<<(std::ostream &os, DurianType &type) {
             os << "double";
             break;
     }
+    return os;
 }
+

@@ -2,7 +2,9 @@
 #include <opcode.h>
 #include <cstdlib>
 #include <DurianObject.h>
+
 #include <iostream>
+#include <debug.h>
 
 
 // Public
@@ -14,14 +16,15 @@ VM::VM(unsigned char *bytecode) {
 }
 
 VM::~VM() {
-    free(code);
-    free(stack);
+
 }
+
 
 int VM::run() {
     //DurianObject a, b, v;
     while(true) {
         unsigned char opcode = nextBytecode();
+        DURIAN_DEBUG_LOG("%x\n", opcode);
         DurianObject a, b;
         switch (opcode) {
             case Opcode::HALT: return 0;
@@ -93,8 +96,8 @@ int VM::run() {
             case Opcode::FDIV:
                 b = pop();
                 a = pop();
-                if (b.type == DurianType::Integer && b.value.ival == 0 ||
-                    b.type == DurianType::Double && b.value.dval == 0.0) {
+                if ((b.type == DurianType::Integer && b.value.ival == 0) ||
+                    (b.type == DurianType::Double && b.value.dval == 0.0)) {
                     std::cout << "DivisionByZeroError." << std::endl;
                 }
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {

@@ -3,7 +3,7 @@ project(durian)
 
 set(CMAKE_CXX_STANDARD 11)
 
-include_directories(${PROJECT_SOURCE_DIR}/src/include)
+include_directories(src/include)
 
 add_subdirectory(googletest/)
 
