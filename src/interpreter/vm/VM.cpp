@@ -1,7 +1,8 @@
-#include <VM.h>
-#include <opcode.h>
+#include "../../include/VM.h"
+#include "../../include/opcode.h"
 #include <cstdlib>
-#include <DurianObject.h>
+#include "../../include/DurianObject.h"
+#include "../../include/debug.h"
 #include <iostream>
 
 
@@ -14,14 +15,14 @@ VM::VM(unsigned char *bytecode) {
 }
 
 VM::~VM() {
-    free(code);
-    free(stack);
+
 }
 
 int VM::run() {
     //DurianObject a, b, v;
     while(true) {
         unsigned char opcode = nextBytecode();
+        DURIAN_DEBUG_LOG("%x\n", opcode);
         DurianObject a, b;
         switch (opcode) {
             case Opcode::HALT: return 0;

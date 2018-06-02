@@ -1,6 +1,6 @@
 #pragma once
 
-#include <DurianObject.h>
+#include "DurianObject.h"
 
 #ifndef DURIAN_VM_H
 #define DURIAN_VM_H
