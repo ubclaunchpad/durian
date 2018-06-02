@@ -5,22 +5,10 @@ set(CMAKE_CXX_STANDARD 11)
 
 include_directories(${PROJECT_SOURCE_DIR}/src/include)
 
+add_subdirectory(googletest/)
+
 set(SOURCE_FILES
         src/lexer/Lexer.cpp)
-
-set(TEST_FILES
-        test/TestLexer.cpp)
-
-add_subdirectory(googletest/)
-
-add_subdirectory(googletest/)
-
-set(SOURCE_FILES
-        src/lexer/Lexer.cpp
-        src/interpreter/vm/VM.cpp)
-
-set(TEST_FILES
-        test/main.cpp src/include/DurianObject.h)
 
 set(TEST_FILES
         test/TestLexer.cpp)

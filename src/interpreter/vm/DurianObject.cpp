@@ -13,7 +13,7 @@ DurianObject::DurianObject(double dval) {
 
 DurianObject::DurianObject(int64_t ival)  {
     type = DurianType::Integer;
-    value.dval = ival;
+    value.ival = ival;
 }
 
 std::ostream &operator<<(std::ostream &os, DurianType &type) {
