@@ -8,11 +8,10 @@ include_directories(${PROJECT_SOURCE_DIR}/src/include)
 add_subdirectory(googletest/)
 
 set(SOURCE_FILES
-        src/lexer/Lexer.cpp
-        src/ExampleClass.cpp)
+        src/lexer/Lexer.cpp)
 
 set(TEST_FILES
-        test/main.cpp)
+        test/TestLexer.cpp)
 
 add_executable(durian
         src/main.cpp
