@@ -94,8 +94,8 @@ int VM::run() {
             case Opcode::FDIV:
                 b = pop();
                 a = pop();
-                if (b.type == DurianType::Integer && b.value.ival == 0 ||
-                    b.type == DurianType::Double && b.value.dval == 0.0) {
+                if ((b.type == DurianType::Integer && b.value.ival == 0) ||
+                    (b.type == DurianType::Double && b.value.dval == 0.0)) {
                     std::cout << "DivisionByZeroError." << std::endl;
                 }
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
