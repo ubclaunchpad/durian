@@ -30,3 +30,22 @@ To briefly explain, this:
 * Creates a new directory named `build/` and enters it.
 * Calls CMake to create the build system in the current directory (i.e. `build/`), telling it that the CMakeLists.txt config file is in the parent directory (i.e. `..`).
 * Calls make (i.e. the generated build system) in the `build/` directory to compile the code.
+
+## Durian Sample Code
+```
+$ durian example.dur shit
+         88                        88
+         88                        ""
+         88
+ ,adPPYb,88 88       88 8b,dPPYba, 88 ,adPPYYba, 8b,dPPYba,
+a8"    `Y88 88       88 88P'   "Y8 88 ""     `Y8 88P'   `"8a
+8b       88 88       88 88         88 ,adPPPPP88 88       88
+"8a,   ,d88 "8a,   ,a88 88         88 88,    ,88 88       88
+ `"8bbdP"Y8  `"YbbdP'Y8 88         88 `"8bbdP"Y8 88       88
+
+@ UBC Launch Pad 2018!
+
+thiabaud is eaten!
+Delicious!
+Yikes!
+```
