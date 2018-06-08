@@ -5,3 +5,7 @@ Parser::Parser(const std::string input)
 {
 
 }
+
+std::unique_ptr<ASTree> Parser::buildTree() {
+    return nullptr;
+}

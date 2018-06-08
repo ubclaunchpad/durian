@@ -12,7 +12,7 @@ set(SOURCE_FILES
         src/parser/Parser.cpp)
 
 set(TEST_FILES
-        test/TestLexer.cpp)
+        test/TestLexer.cpp test/TestParser.cpp src/include/ASTree.h)
 
 add_executable(VM
         src/interpreter/main.cpp
