@@ -36,4 +36,4 @@ function_call        ::= IDENT "(" { IDENT "," } [ IDENT ] ")";
 group                ::= "(" expr ")";
 unary_op             ::= "+" | "-" | "&" | "!";
 binary_op            ::= "+" | "-" | "*" | "/" | "&" | "<=" | ">=" | "==" | "!=" | "and" | "or";
-eol                  ::= "\r\n";
+eol                  ::= "\r\n" | "\n";
