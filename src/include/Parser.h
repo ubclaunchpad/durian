@@ -5,12 +5,11 @@
 #include <exception>
 
 class Parser {
-    std::unique_ptr<ASTree> m_tree;
     Lexer m_lexer;
     Token m_currentToken;
 
 public:
-    Parser(const std::string input);
+    Parser(Lexer lexer);
     void buildTree();
 private:
     Token getNextToken() {

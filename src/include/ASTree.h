@@ -7,10 +7,6 @@
 
 struct Statement { };
 
-class ASTree {
-    std::vector<std::unique_ptr<Statement>> m_statements;
-};
-
 //////////////////////////////////////////
 /// Expressions
 
@@ -24,11 +20,11 @@ public:
 };
 
 class BinaryExpression : public Expression {
-    char m_op;
+    TokenType m_op;
     std::unique_ptr<ExpressionGroup> m_left;
     std::unique_ptr<ExpressionGroup> m_right;
 public:
-    BinaryExpression(char op, std::unique_ptr<ExpressionGroup> left,
+    BinaryExpression(TokenType op, std::unique_ptr<ExpressionGroup> left,
                      std::unique_ptr<ExpressionGroup> right)
             : m_op(op)
             , m_left(std::move(left))

@@ -1,7 +1,7 @@
 #include <Parser.h>
 
-Parser::Parser(const std::string input)
-    : m_lexer(input)
+Parser::Parser(Lexer lexer)
+    : m_lexer(std::move(lexer))
     , m_currentToken(m_lexer.getToken())
 {
 

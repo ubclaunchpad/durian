@@ -3,11 +3,11 @@
 #include <Parser.h>
 
 TEST(TestParser, TestParseFunctionDefAndCall) {
-    Parser parser(R"example(
+    Parser parser(Lexer(R"example(
 def add(a, b) {
     return a + b
 }
 let c = add(5, 6)
-)example");
+)example"));
     parser.buildTree();
 }
