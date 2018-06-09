@@ -24,16 +24,17 @@ scan_statement       ::= "scan" IDENT;
 function_declaration ::= "def" IDENT "(" { IDENT "," } [ IDENT ] ")" block_statement;
 return_statement     ::= "return" expr;
 block_statement      ::= "{" eol { statement eol } "}" | "{" statement "}";
-expr                 ::= literal
-                       | unary_expr
-                       | binary_expr
-                       | function_call
-                       | group;
+expr                 ::= or_expr;
+or_expr              ::= and_expr { "or" and_expr };
+and_expr             ::= eq_expr { "and" eq_expr };
+eq_expr              ::= comp_expr { ("==" | "!=") comp_expr };
+comp_expr            ::= concat_expr { (">" | "<" | ">=" | "<=") concat_expr };
+concat_expr          ::= add_expr { "&" add_expr };
+add_expr             ::= mul_expr { ("+" | "-") mul_expr };
+mul_expr             ::= unary_expr { ("*" | "/") unary_expr };
+unary_expr           ::= ("+" | "-" | "!" | "&") unary_expr | no_op_expr;
+no_op_expr           ::= literal | group | function_call | IDENT;
 literal              ::= "true" | "false" | DIGITS | DIGITS "." DIGITS | STRING;
-unary_expr           ::= unary_op expr;
-binary_expr          ::= expr binary_op expr;
 function_call        ::= IDENT "(" { IDENT "," } [ IDENT ] ")";
 group                ::= "(" expr ")";
-unary_op             ::= "+" | "-" | "&" | "!";
-binary_op            ::= "+" | "-" | "*" | "/" | "&" | "<=" | ">=" | "==" | "!=" | "and" | "or";
 eol                  ::= "\r\n" | "\n";
