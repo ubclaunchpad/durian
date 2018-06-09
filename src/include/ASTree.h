@@ -32,20 +32,20 @@ public:
 };
 
 class UnaryExpression : public Expression {
-    char m_op;
-    std::unique_ptr<ExpressionGroup> m_operand;
+    TokenType m_op;
+    std::unique_ptr<Expression> m_operand;
 public:
-    UnaryExpression(char op, std::unique_ptr<ExpressionGroup> operand)
+    UnaryExpression(TokenType op, std::unique_ptr<Expression> operand)
             : m_op(op)
             , m_operand(std::move(operand)) { }
 };
 
 class FunctionCall : public Expression {
     std::string m_functionName;
-    std::vector<std::unique_ptr<ExpressionGroup>> m_args;
+    std::vector<std::unique_ptr<Expression>> m_args;
 public:
     FunctionCall(std::string &functionName,
-                 std::vector<std::unique_ptr<ExpressionGroup>> args)
+                 std::vector<std::unique_ptr<Expression>> args)
             : m_functionName(functionName)
             , m_args(std::move(args)) { }
 };
