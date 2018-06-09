@@ -12,14 +12,14 @@ struct Statement { };
 
 struct Expression : public Statement { };
 
-class ExpressionGroup : public Expression {
+struct ExpressionGroup : public Expression {
     std::unique_ptr<Expression> m_expression;
 public:
     explicit ExpressionGroup(std::unique_ptr<Expression> expression)
             : m_expression(std::move(expression)) { }
 };
 
-class BinaryExpression : public Expression {
+struct BinaryExpression : public Expression {
     TokenType m_op;
     std::unique_ptr<ExpressionGroup> m_left;
     std::unique_ptr<ExpressionGroup> m_right;
@@ -31,7 +31,7 @@ public:
             , m_right(std::move(right)) { }
 };
 
-class UnaryExpression : public Expression {
+struct UnaryExpression : public Expression {
     TokenType m_op;
     std::unique_ptr<Expression> m_operand;
 public:
@@ -40,7 +40,7 @@ public:
             , m_operand(std::move(operand)) { }
 };
 
-class FunctionCall : public Expression {
+struct FunctionCall : public Expression {
     std::string m_functionName;
     std::vector<std::unique_ptr<Expression>> m_args;
 public:
@@ -53,30 +53,30 @@ public:
 //////////////////////////////////////////
 /// Literals
 
-class Literal : public Expression { };
+struct Literal : public Expression { };
 
-class Integer : public Literal {
+struct Integer : public Literal {
     int m_value;
 public:
-    explicit Integer(std::string value) : m_value(std::stoi(value)) { }
+    explicit Integer(const std::string &value) : m_value(std::stoi(value)) { }
 };
 
-class Float : public Literal {
+struct Float : public Literal {
     float m_value;
 public:
-    explicit Float(std::string value) : m_value(std::stof(value)) { }
+    explicit Float(const std::string &value) : m_value(std::stof(value)) { }
 };
 
-class String : public Literal {
+struct String : public Literal {
     std::string m_value;
 public:
-    explicit String(std::string value) : m_value(std::move(value)) { }
+    explicit String(const std::string &value) : m_value(value) { }
 };
 
-class Boolean : public Literal {
+struct Boolean : public Literal {
     bool m_value;
 public:
-    explicit Boolean(std::string value) {
+    explicit Boolean(const std::string &value) {
         std::istringstream(value) >> std::boolalpha >> m_value;
     }
 };
@@ -84,19 +84,19 @@ public:
 //////////////////////////////////////////
 /// Functions
 
-class Function : public Statement {
+struct Function : public Statement {
     std::string m_name;
     std::vector<std::string> m_argNames;
-    std::unique_ptr<Statement> m_block;
+    std::vector<std::unique_ptr<Statement>> m_statements;
 public:
     Function(std::string &name, std::vector<std::string> argNames,
-             std::unique_ptr<Statement> block)
+             std::vector<std::unique_ptr<Statement>> statements)
             : m_name(name)
             , m_argNames(std::move(argNames))
-            , m_block(std::move(block)) { }
+            , m_statements(std::move(statements)) { }
 };
 
-class Return : public Statement {
+struct Return : public Statement {
     std::unique_ptr<Expression> m_expression;
 public:
     explicit Return(std::unique_ptr<Expression> expression)

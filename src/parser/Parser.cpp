@@ -1,6 +1,6 @@
 #include <Parser.h>
 
-explicit Parser::Parser(Lexer lexer)
+Parser::Parser(Lexer lexer)
     : m_lexer(std::move(lexer))
     , m_currentToken(m_lexer.getToken())
 {
