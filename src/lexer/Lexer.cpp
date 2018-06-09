@@ -136,13 +136,11 @@ Token Lexer::getToken() {
 }
 
 bool Lexer::isDigit(const char c) {
-    if (isdigit(c) == 0) return false;
-    return true;
+    return (isdigit(c) != 0);
 }
 
 bool Lexer::isAlpha(const char c) {
-    if (isalpha(c) == 0) return false;
-    return true;
+    return (isalpha(c) != 0);
 }
 
 bool Lexer::isIdentChar(const char c) {

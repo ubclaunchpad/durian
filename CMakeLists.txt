@@ -8,10 +8,11 @@ include_directories(src/include)
 add_subdirectory(googletest/)
 
 set(SOURCE_FILES
-        src/lexer/Lexer.cpp)
+        src/lexer/Lexer.cpp
+        src/parser/Parser.cpp)
 
 set(TEST_FILES
-        test/TestLexer.cpp)
+        test/TestLexer.cpp test/TestParser.cpp)
 
 add_executable(VM
         src/interpreter/main.cpp
