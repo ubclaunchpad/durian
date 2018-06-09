@@ -20,7 +20,7 @@ std::unique_ptr<Statement> Parser::parseStatement() {
             statement = parseReturn();
         case TokenType::Let:
             // todo : assignment
-            printf("do me");
+            statement = std::unique_ptr<Literal>(nullptr);
 
         // todo: other statements
 
@@ -36,7 +36,7 @@ std::unique_ptr<Expression> Parser::parseExpression() {
         // Check for group
         case TokenType::LeftParen:
             getNextToken();
-            statement = std::make_unique<ExpressionGroup>(
+            statement = util::make_unique<ExpressionGroup>(
                     parseExpression());
             break;
         case TokenType::RightParen:
@@ -48,7 +48,7 @@ std::unique_ptr<Expression> Parser::parseExpression() {
         case TokenType::Minus:
         case TokenType::Ampersand:
         case TokenType::Bang:
-            statement = std::make_unique<UnaryExpression>(
+            statement = util::make_unique<UnaryExpression>(
                     m_currentToken.type, parseExpression());
 
         default:
@@ -72,7 +72,7 @@ std::unique_ptr<Expression> Parser::parseExpression() {
                 case TokenType::And:
                 case TokenType::Or:
                     // If operator, build BinaryExpression
-                    statement = std::make_unique<BinaryExpression>(
+                    statement = util::make_unique<BinaryExpression>(
                             m_currentToken.type, statement, parseExpression());
                 default:
                     // Otherwise return literal
@@ -87,25 +87,24 @@ std::unique_ptr<Literal> Parser::parseLiteral() {
     std::unique_ptr<Literal> statement;
     switch (m_currentToken.type) {
         case TokenType::Integer:
-            statement = std::make_unique<Integer>(
+            statement = util::make_unique<Integer>(
                     Integer(m_currentToken.literal));
             break;
         case TokenType::Float:
-            statement = std::make_unique<Float>(
+            statement = util::make_unique<Float>(
                     Float(m_currentToken.literal));
             break;
         case TokenType::String:
-            statement = std::make_unique<String>(
+            statement = util::make_unique<String>(
                     String(m_currentToken.literal));
             break;
         case TokenType::True:
         case TokenType::False:
-            statement = std::make_unique<Boolean>(
+            statement = util::make_unique<Boolean>(
                     Boolean(m_currentToken.literal));
             break;
         default:
             // todo : exceptions, details
-            printf("your token is shit");
             return std::unique_ptr<Literal>(nullptr);
     }
     getNextToken();

@@ -2,6 +2,7 @@
 
 #include <Lexer.h>
 #include <ASTree.h>
+#include <util.h>
 #include <exception>
 
 class Parser {
