@@ -7,7 +7,7 @@ namespace Opcode {
       ICONST    = 0x02,  // push next 8 bytes onto stack as integer constant.
       ICONST_0  = 0x04,  // push literal int(0) onto stack.
       ICONST_1  = 0x05,  // push literal int(1) onto stack.
-      DCONST    = 0x0A,  // push next 8 bytes onto st4ack as double constant.
+      DCONST    = 0x0A,  // push next 8 bytes onto stack as double constant.
       BCONST_F  = 0x0E,  // push literal bool(false) onto stack.
       BCONST_T  = 0x0F,  // push literal bool(true) onto stack.
       DUP       = 0x58,  // duplicate top of stack.

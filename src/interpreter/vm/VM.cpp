@@ -28,7 +28,7 @@ int VM::run() {
         unsigned char opcode = nextBytecode();
         DURIAN_DEBUG_LOG("%x\n", opcode);
         DurianObject a, b;
-        int32_t i;
+        int32_t jumpLen;
         switch (opcode) {
             case Opcode::HALT: return 0;
             case Opcode::NOP: break;
@@ -47,10 +47,10 @@ int VM::run() {
                 m_pc += sizeof(double);
                 break;
             case Opcode::BCONST_F:
-                push((bool)false);
+                push(false);
                 break;
             case Opcode::BCONST_T:
-                push((bool)true);
+                push(true);
                 break;
             case Opcode::DUP:
                 a = pop();
@@ -167,10 +167,10 @@ int VM::run() {
                 break;
             case Opcode::BR_F:
                 a = pop();
-                i = *reinterpret_cast<int32_t*>(m_code+m_pc);
+                jumpLen = *reinterpret_cast<int32_t*>(m_code+m_pc);
                 m_pc += sizeof(int32_t);
-                if (a.isFalse()) {
-                    m_pc += i;
+                if (a.isFalsy()) {
+                    m_pc += jumpLen;
                 }
                 break;
             case Opcode::PRINT:
