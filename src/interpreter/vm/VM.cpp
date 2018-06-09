@@ -37,6 +37,12 @@ int VM::run() {
             case Opcode::ICONST_1:
                 push((int64_t)1);
                 break;
+            case Opcode::BCONST_F:
+                push((bool)false);
+                break;
+            case Opcode::BCONST_T:
+                push((bool)true);
+                break;
             case Opcode::ADD:
                 b = pop();
                 a = pop();
@@ -128,6 +134,18 @@ int VM::run() {
                     std::cout << "TypeError: Invalid operand type for -: "
                               << a.type
                               << "." << std::endl;
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case Opcode::NOT:
+                a = pop();
+                if (a.type == DurianType::Boolean) {
+                    push(!a.value.bval);
+                } else {
+                    std::cout << "TypeError: Invalid operand type for !: "
+                              << a.type
+                              << "." << std::endl;
+                    exit(EXIT_FAILURE);
                 }
                 break;
             case Opcode::PRINT:
@@ -136,6 +154,8 @@ int VM::run() {
                     std::cout << a.value.ival << std::endl;
                 else if (a.type == DurianType::Double)
                     std::cout << a.value.dval << std::endl;
+                else if (a.type == DurianType::Boolean)
+                    std::cout << (a.value.bval ? "true" : "false") << std::endl;
                 else
                     std::cout << "Unknown Type";
                 break;

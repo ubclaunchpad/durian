@@ -17,6 +17,11 @@ DurianObject::DurianObject(int64_t ival)  {
     value.ival = ival;
 }
 
+DurianObject::DurianObject(bool bval) {
+    type = DurianType::Boolean;
+    value.bval = bval;
+}
+
 std::ostream &operator<<(std::ostream &os, DurianType &type) {
     // Make sure all cases are covered when adding new types.
     switch (type) {
@@ -25,6 +30,9 @@ std::ostream &operator<<(std::ostream &os, DurianType &type) {
             break;
         case DurianType::Double:
             os << "double";
+            break;
+        case DurianType::Boolean:
+            os << "bool";
             break;
     }
     return os;

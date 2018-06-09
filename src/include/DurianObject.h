@@ -7,17 +7,20 @@
 
 enum struct DurianType {
     Double,
-    Integer
+    Integer,
+    Boolean
 };
 
 struct DurianObject {
     DurianObject();
     DurianObject(double dval);
     DurianObject(int64_t ival);
+    DurianObject(bool bval);
     DurianType type;
     union {
         double dval;
         int64_t ival;
+        bool bval;
     } value;
 };
 
