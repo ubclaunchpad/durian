@@ -6,106 +6,234 @@
 #include <sstream>
 #include <memory>
 
-struct Statement { };
+namespace AST {
+
+struct Stmt;
+struct IfStmt;
+struct WhileStmt;
+struct NextStmt;
+struct BreakStmt;
+struct LetStmt;
+struct AssignStmt;
+struct PrintStmt;
+struct ErrStmt;
+struct ScanStmt;
+struct FnDecl;
+struct ReturnStmt;
+struct Expr;
+struct OrExpr;
+struct AndExpr;
+struct EqExpr;
+struct CompExpr;
+struct ConcatExpr;
+struct AddExpr;
+struct MulExpr;
+struct UnaryExpr;
+struct IntegerLit;
+struct FloatLit;
+struct StringLit;
+struct BooleanLit;
+struct Identifier;
+struct FnCall;
+
+struct Stmt { };
+
+struct BlockStmt : public Stmt {
+    std::vector<std::unique_ptr<Stmt>> m_statements;
+    explicit BlockStmt(std::vector<std::unique_ptr<Stmt>> statements)
+        : m_statements(std::move(statements)) { }
+};
+
+struct IfStmt : public Stmt {
+    std::unique_ptr<Expr> m_condition;
+    std::unique_ptr<BlockStmt> m_trueBody;
+    // note: if an `else` statement this will be a BlockStmt
+    // if an `elif` statement this will be another IfStmt
+    // otherwise nullptr
+    std::unique_ptr<Stmt> m_falseBody;
+    explicit IfStmt(std::unique_ptr<Expr> condition,
+                    std::unique_ptr<BlockStmt> trueBody,
+                    std::unique_ptr<Stmt> falseBody)
+        : m_condition(std::move(condition))
+        , m_trueBody(std::move(trueBody))
+        , m_falseBody(std::move(falseBody)) { }
+};
+
+struct WhileStmt : public Stmt {
+    std::unique_ptr<Expr> m_condition;
+    std::unique_ptr<BlockStmt> m_body;
+    explicit WhileStmt(std::unique_ptr<Expr> condition, std::unique_ptr<BlockStmt> body)
+        : m_condition(std::move(condition))
+        , m_body(std::move(body)) { }
+};
+
+struct NextStmt : public Stmt { };
+
+struct BreakStmt : public Stmt { };
+
+struct LetStmt : public Stmt {
+    std::unique_ptr<Identifier> m_ident;
+    std::unique_ptr<Expr> m_expr;
+    explicit LetStmt(std::unique_ptr<Identifier> ident, std::unique_ptr<Expr> expr)
+        : m_ident(std::move(ident))
+        , m_expr(std::move(expr)) { }
+};
+
+struct AssignStmt : public Stmt {
+    std::unique_ptr<Identifier> m_ident;
+    std::unique_ptr<Expr> m_expr;
+    explicit AssignStmt(std::unique_ptr<Identifier> ident, std::unique_ptr<Expr> expr)
+        : m_ident(std::move(ident))
+        , m_expr(std::move(expr)) { }
+};
+
+struct PrintStmt : public Stmt {
+    std::unique_ptr<Expr> m_expr;
+    explicit PrintStmt(std::unique_ptr<Expr> expr)
+        : m_expr(std::move(expr)) { }
+};
+
+struct ErrStmt : public Stmt {
+    std::unique_ptr<Expr> m_expr;
+    explicit ErrStmt(std::unique_ptr<Expr> expr)
+       : m_expr(std::move(expr)) { }
+};
+
+struct ScanStmt : public Stmt {
+    std::unique_ptr<Identifier> m_ident;
+    explicit ScanStmt(std::unique_ptr<Identifier> ident)
+        : m_ident(std::move(ident)) { }
+};
+
+struct FnDecl : public Stmt {
+    std::unique_ptr<Identifier> m_ident;
+    std::vector<std::unique_ptr<Identifier>> m_params;
+    std::unique_ptr<BlockStmt> m_body;
+    explicit FnDecl(std::unique_ptr<Identifier> ident,
+                    std::vector<std::unique_ptr<Identifier>> params,
+                    std::unique_ptr<BlockStmt> body)
+        : m_ident(std::move(ident))
+        , m_params(std::move(params))
+        , m_body(std::move(body)) { }
+};
+
+struct ReturnStmt : public Stmt {
+    std::unique_ptr<Expr> m_expr;
+    explicit ReturnStmt(std::unique_ptr<Expr> expr)
+        : m_expr(std::move(expr)) { }
+};
 
 //////////////////////////////////////////
 /// Expressions
 
-struct Expression : public Statement { };
+struct Expr : public Stmt { };
 
-struct ExpressionGroup : public Expression {
-    std::unique_ptr<Expression> m_expression;
-public:
-    explicit ExpressionGroup(std::unique_ptr<Expression> expression)
-            : m_expression(std::move(expression)) { }
+struct OrExpr : public Expr {
+    std::unique_ptr<Expr> m_left;
+    std::unique_ptr<Expr> m_right;
+    explicit OrExpr(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+        : m_left(std::move(left))
+        , m_right(std::move(right)) { }
 };
 
-struct BinaryExpression : public Expression {
+struct AndExpr : public Expr {
+    std::unique_ptr<Expr> m_left;
+    std::unique_ptr<Expr> m_right;
+    explicit AndExpr(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+        : m_left(std::move(left))
+        , m_right(std::move(right)) { }
+};
+
+struct EqExpr : public Expr {
     TokenType m_op;
-    std::unique_ptr<Expression> m_left;
-    std::unique_ptr<Expression> m_right;
-public:
-    BinaryExpression(TokenType op, std::unique_ptr<Expression> left,
-                     std::unique_ptr<Expression> right)
-            : m_op(op)
-            , m_left(std::move(left))
-            , m_right(std::move(right)) { }
+    std::unique_ptr<Expr> m_left;
+    std::unique_ptr<Expr> m_right;
+    explicit EqExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+        : m_op(op)
+        , m_left(std::move(left))
+        , m_right(std::move(right)) { }
 };
 
-struct UnaryExpression : public Expression {
+struct CompExpr : public Expr {
     TokenType m_op;
-    std::unique_ptr<Expression> m_operand;
-public:
-    UnaryExpression(TokenType op, std::unique_ptr<Expression> operand)
-            : m_op(op)
-            , m_operand(std::move(operand)) { }
+    std::unique_ptr<Expr> m_left;
+    std::unique_ptr<Expr> m_right;
+    explicit CompExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+        : m_op(op)
+        , m_left(std::move(left))
+        , m_right(std::move(right)) { }
 };
 
-struct FunctionCall : public Expression {
-    std::string m_functionName;
-    std::vector<std::unique_ptr<Expression>> m_args;
-public:
-    FunctionCall(std::string &functionName,
-                 std::vector<std::unique_ptr<Expression>> args)
-            : m_functionName(functionName)
-            , m_args(std::move(args)) { }
+struct ConcatExpr : public Expr {
+    std::unique_ptr<Expr> m_left;
+    std::unique_ptr<Expr> m_right;
+    explicit ConcatExpr(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+        : m_left(std::move(left))
+        , m_right(std::move(right)) { }
 };
 
-struct Variable : public Expression {
-    std::string m_name;
-public:
-    Variable(const std::string &name) : m_name(name) { }
+struct AddExpr : public Expr {
+    TokenType m_op;
+    std::unique_ptr<Expr> m_left;
+    std::unique_ptr<Expr> m_right;
+    explicit AddExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+        : m_op(op)
+        , m_left(std::move(left))
+        , m_right(std::move(right)) { }
+
 };
 
-//////////////////////////////////////////
-/// Literals
-
-struct Literal : public Expression { };
-
-struct Integer : public Literal {
-    int m_value;
-public:
-    explicit Integer(const std::string &value) : m_value(std::stoi(value)) { }
+struct MulExpr : public Expr {
+    TokenType m_op;
+    std::unique_ptr<Expr> m_left;
+    std::unique_ptr<Expr> m_right;
+    explicit MulExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+        : m_op(op)
+        , m_left(std::move(left))
+        , m_right(std::move(right)) { }
 };
 
-struct Float : public Literal {
-    float m_value;
-public:
-    explicit Float(const std::string &value) : m_value(std::stof(value)) { }
+struct UnaryExpr : public Expr {
+    TokenType m_op;
+    std::unique_ptr<Expr> m_operand;
+    explicit UnaryExpr(TokenType op, std::unique_ptr<Expr> operand)
+        : m_op(op)
+        , m_operand(std::move(operand)) { }
 };
 
-struct String : public Literal {
+struct IntegerLit: public Expr {
+    int64_t m_value;
+    explicit IntegerLit(const std::string &value) : m_value(std::stoll(value)) { }
+};
+
+struct FloatLit: public Expr {
+    double m_value;
+    explicit FloatLit(const std::string &value) : m_value(std::stod(value)) { }
+};
+
+struct StringLit: public Expr {
     std::string m_value;
-public:
-    explicit String(const std::string &value) : m_value(value) { }
+    explicit StringLit(const std::string &value) : m_value(value) { }
 };
 
-struct Boolean : public Literal {
+struct BooleanLit: public Expr {
     bool m_value;
-public:
-    explicit Boolean(const std::string &value) {
+    explicit BooleanLit(const std::string &value) {
         std::istringstream(value) >> std::boolalpha >> m_value;
     }
 };
 
-//////////////////////////////////////////
-/// Functions
-
-struct Function : public Statement {
-    std::string m_name;
-    std::vector<std::string> m_argNames;
-    std::vector<std::unique_ptr<Statement>> m_statements;
-public:
-    Function(std::string &name, std::vector<std::string> argNames,
-             std::vector<std::unique_ptr<Statement>> statements)
-            : m_name(name)
-            , m_argNames(std::move(argNames))
-            , m_statements(std::move(statements)) { }
+struct Identifier : public Expr {
+    const std::string m_identStr;
+    explicit Identifier(const std::string identStr) : m_identStr(identStr) { }
 };
 
-struct Return : public Statement {
-    std::unique_ptr<Expression> m_expression;
-public:
-    explicit Return(std::unique_ptr<Expression> expression)
-        : m_expression(std::move(expression)) { }
+struct FnCall : public Expr {
+    std::unique_ptr<Identifier> m_ident;
+    std::vector<std::unique_ptr<Expr>> m_args;
+    explicit FnCall(std::unique_ptr<Identifier> ident, std::vector<std::unique_ptr<Expr>> args)
+        : m_ident(std::move(ident))
+        , m_args(std::move(args)) { }
 };
+
+}

@@ -11,8 +11,8 @@ void Parser::buildTree() {
     parseStatement();
 }
 
-std::unique_ptr<Statement> Parser::parseStatement() {
-    std::unique_ptr<Statement> statement;
+std::unique_ptr<AST::Stmt> Parser::parseStatement() {
+    std::unique_ptr<AST::Stmt> statement;
     Token identifier;
     switch(m_currentToken.type) {
         case TokenType::Def:
@@ -25,9 +25,6 @@ std::unique_ptr<Statement> Parser::parseStatement() {
             switch(m_currentToken.type) {
                 case TokenType::LeftParen:
                     getNextToken();
-                default:
-                    statement = util::make_unique<Variable>(
-                            m_currentToken.literal);
             }
             break;
 
@@ -40,18 +37,16 @@ std::unique_ptr<Statement> Parser::parseStatement() {
     return std::move(statement);
 }
 
-std::unique_ptr<Expression> Parser::parseExpression() {
-    std::unique_ptr<Expression> statement;
+std::unique_ptr<AST::Expr> Parser::parseExpression() {
+    std::unique_ptr<AST::Expr> statement;
     switch(m_currentToken.type) {
         // Check for group
         case TokenType::LeftParen:
             getNextToken();
-            statement = util::make_unique<ExpressionGroup>(
-                    parseExpression());
             break;
         case TokenType::RightParen:
             // todo ummmm
-            statement = std::unique_ptr<Literal>(nullptr);
+            statement = std::unique_ptr<AST::Expr>(nullptr);
             break;
 
         // If operator first, this is an unary expression
@@ -59,9 +54,7 @@ std::unique_ptr<Expression> Parser::parseExpression() {
         case TokenType::Minus:
         case TokenType::Ampersand:
         case TokenType::Bang:
-            statement = util::make_unique<UnaryExpression>(
-                    m_currentToken.type, parseExpression());
-
+        // TODO
         default:
             // Check for literal - if no literal, just return null
             statement = parseLiteral();
@@ -82,9 +75,6 @@ std::unique_ptr<Expression> Parser::parseExpression() {
                 case TokenType::BangEqual:
                 case TokenType::And:
                 case TokenType::Or:
-                    // If operator, build BinaryExpression
-                    statement = util::make_unique<BinaryExpression>(
-                            m_currentToken.type, std::move(statement), parseExpression());
                 default:
                     // Otherwise return literal
                     break;
@@ -94,39 +84,39 @@ std::unique_ptr<Expression> Parser::parseExpression() {
     return std::move(statement);
 }
 
-std::unique_ptr<Literal> Parser::parseLiteral() {
-    std::unique_ptr<Literal> statement;
+std::unique_ptr<AST::Expr> Parser::parseLiteral() {
+    std::unique_ptr<AST::Expr> statement;
     switch (m_currentToken.type) {
         case TokenType::Integer:
-            statement = util::make_unique<Integer>(
-                    Integer(m_currentToken.literal));
+            statement = util::make_unique<AST::IntegerLit>(
+                    AST::IntegerLit(m_currentToken.literal));
             break;
         case TokenType::Float:
-            statement = util::make_unique<Float>(
-                    Float(m_currentToken.literal));
+            statement = util::make_unique<AST::FloatLit>(
+                    AST::FloatLit(m_currentToken.literal));
             break;
         case TokenType::String:
-            statement = util::make_unique<String>(
-                    String(m_currentToken.literal));
+            statement = util::make_unique<AST::StringLit>(
+                    AST::StringLit(m_currentToken.literal));
             break;
         case TokenType::True:
         case TokenType::False:
-            statement = util::make_unique<Boolean>(
-                    Boolean(m_currentToken.literal));
+            statement = util::make_unique<AST::BooleanLit>(
+                    AST::BooleanLit(m_currentToken.literal));
             break;
         default:
             // todo : exceptions, details
-            return std::unique_ptr<Literal>(nullptr);
+            return std::unique_ptr<AST::Expr>(nullptr);
     }
     getNextToken();
     return std::move(statement);
 }
 
-std::unique_ptr<Function> Parser::parseFunction() {
-    return std::unique_ptr<Function>(nullptr);
+std::unique_ptr<AST::FnDecl> Parser::parseFunction() {
+    return std::unique_ptr<AST::FnDecl>(nullptr);
 }
 
-std::unique_ptr<Return> Parser::parseReturn() {
-    return std::unique_ptr<Return>(nullptr);
+std::unique_ptr<AST::ReturnStmt> Parser::parseReturn() {
+    return std::unique_ptr<AST::ReturnStmt>(nullptr);
 }
 
