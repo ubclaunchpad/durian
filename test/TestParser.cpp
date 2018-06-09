@@ -7,7 +7,7 @@ TEST(TestParser, TestParseFunctionDefAndCall) {
 def add(a, b) {
     return a + b
 }
-let c = add(5, 6)
+add(5, 6)
 )example"));
     parser.buildTree();
 }

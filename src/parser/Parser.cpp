@@ -18,15 +18,24 @@ std::unique_ptr<Statement> Parser::parseStatement() {
             statement = parseFunction();
         case TokenType::Return:
             statement = parseReturn();
-        case TokenType::Let:
-            // todo : assignment
-            statement = std::unique_ptr<Literal>(nullptr);
+        case TokenType::Identifier:
+            Token identifier = m_currentToken;
+            getNextToken();
+            switch(m_currentToken.type) {
+                case TokenType::LeftParen:
+                    getNextToken();
+                default:
+                    statement = util::make_unique<Variable>(
+                            m_currentToken.literal);
+            }
+            break;
 
         // todo: other statements
 
         default:
             statement = parseExpression();
     }
+    getNextToken();
     return std::move(statement);
 }
 
@@ -40,6 +49,7 @@ std::unique_ptr<Expression> Parser::parseExpression() {
                     parseExpression());
             break;
         case TokenType::RightParen:
+            // todo ummmm
             statement = std::unique_ptr<Literal>(nullptr);
             break;
 
@@ -52,7 +62,7 @@ std::unique_ptr<Expression> Parser::parseExpression() {
                     m_currentToken.type, parseExpression());
 
         default:
-            // Check for literal
+            // Check for literal - if no literal, just return null
             statement = parseLiteral();
             if (!statement) break;
             // Check for operator

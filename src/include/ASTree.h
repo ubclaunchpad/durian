@@ -50,6 +50,12 @@ public:
             , m_args(std::move(args)) { }
 };
 
+struct Variable : public Expression {
+    std::string m_name;
+public:
+    Variable(const std::string &name) : m_name(name) { }
+};
+
 //////////////////////////////////////////
 /// Literals
 
