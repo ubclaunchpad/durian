@@ -16,6 +16,7 @@ struct DurianObject {
     DurianObject(double dval);
     DurianObject(int64_t ival);
     DurianObject(bool bval);
+    bool isFalse() { return type == DurianType::Boolean && !value.bval; };
     DurianType type;
     union {
         double dval;

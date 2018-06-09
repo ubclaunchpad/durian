@@ -11,6 +11,7 @@ namespace Opcode {
       BCONST_F  = 0x0E,  // push literal bool(false) onto stack.
       BCONST_T  = 0x0F,  // push literal bool(true) onto stack.
       DUP       = 0x58,  // duplicate top of stack.
+      POP       = 0x5F,  // pops top of stack.
       ADD       = 0x60,  // add top two elements on stack, push result back onto stack.
       SUB       = 0x61,  // subtract top two elements on stack, push result back onto stack.
       MUL       = 0x62,  // multiply top two elements on stack, push result back onto stack.
