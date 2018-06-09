@@ -4,6 +4,7 @@
 #include <vector>
 #include <ios>
 #include <sstream>
+#include <memory>
 
 struct Statement { };
 
@@ -21,11 +22,11 @@ public:
 
 struct BinaryExpression : public Expression {
     TokenType m_op;
-    std::unique_ptr<ExpressionGroup> m_left;
-    std::unique_ptr<ExpressionGroup> m_right;
+    std::unique_ptr<Expression> m_left;
+    std::unique_ptr<Expression> m_right;
 public:
-    BinaryExpression(TokenType op, std::unique_ptr<ExpressionGroup> left,
-                     std::unique_ptr<ExpressionGroup> right)
+    BinaryExpression(TokenType op, std::unique_ptr<Expression> left,
+                     std::unique_ptr<Expression> right)
             : m_op(op)
             , m_left(std::move(left))
             , m_right(std::move(right)) { }

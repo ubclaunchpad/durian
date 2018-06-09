@@ -13,13 +13,14 @@ void Parser::buildTree() {
 
 std::unique_ptr<Statement> Parser::parseStatement() {
     std::unique_ptr<Statement> statement;
+    Token identifier;
     switch(m_currentToken.type) {
         case TokenType::Def:
             statement = parseFunction();
         case TokenType::Return:
             statement = parseReturn();
         case TokenType::Identifier:
-            Token identifier = m_currentToken;
+            identifier = m_currentToken;
             getNextToken();
             switch(m_currentToken.type) {
                 case TokenType::LeftParen:
@@ -83,7 +84,7 @@ std::unique_ptr<Expression> Parser::parseExpression() {
                 case TokenType::Or:
                     // If operator, build BinaryExpression
                     statement = util::make_unique<BinaryExpression>(
-                            m_currentToken.type, statement, parseExpression());
+                            m_currentToken.type, std::move(statement), parseExpression());
                 default:
                     // Otherwise return literal
                     break;
