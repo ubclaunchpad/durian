@@ -9,7 +9,7 @@ class Parser {
     Token m_currentToken;
 
 public:
-    Parser(Lexer lexer);
+    explicit Parser(Lexer lexer);
     void buildTree();
 private:
     Token getNextToken() {
