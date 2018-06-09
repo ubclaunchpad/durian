@@ -2,12 +2,12 @@
 
 #include <Parser.h>
 
-TEST(TestLexer, TestFunctionDefAndCall) {
+TEST(TestParser, TestParseFunctionDefAndCall) {
     Parser parser(R"example(
 def add(a, b) {
     return a + b
 }
-add(5, 6)
+let c = add(5, 6)
 )example");
-    auto tree = parser.buildTree();
+    parser.buildTree();
 }
