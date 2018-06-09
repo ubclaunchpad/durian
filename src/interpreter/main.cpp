@@ -6,7 +6,7 @@
 using namespace Opcode;
 
 int main() {
-    unsigned char bytecodes[] = {BCONST_T, NOT, PRINT, HALT};
+    unsigned char bytecodes[] = {DCONST, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF8, 0x3F, PRINT, HALT};
     VM(bytecodes).run();
     return 0;
 }

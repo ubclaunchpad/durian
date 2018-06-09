@@ -31,11 +31,19 @@ int VM::run() {
         switch (opcode) {
             case Opcode::HALT: return 0;
             case Opcode::NOP: break;
+            case Opcode::ICONST:
+                push(*reinterpret_cast<int64_t*>(m_code+m_pc));
+                m_pc += sizeof(int64_t);
+                break;
             case Opcode::ICONST_0:
                 push((int64_t)0);
                 break;
             case Opcode::ICONST_1:
                 push((int64_t)1);
+                break;
+            case Opcode::DCONST:
+                push(*reinterpret_cast<double*>(m_code+m_pc));
+                m_pc += sizeof(double);
                 break;
             case Opcode::BCONST_F:
                 push((bool)false);
@@ -153,7 +161,7 @@ int VM::run() {
                 if (a.type == DurianType::Integer)
                     std::cout << a.value.ival << std::endl;
                 else if (a.type == DurianType::Double)
-                    std::cout << a.value.dval << std::endl;
+                    printf("%f\n", a.value.dval);
                 else if (a.type == DurianType::Boolean)
                     std::cout << (a.value.bval ? "true" : "false") << std::endl;
                 else
