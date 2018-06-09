@@ -5,3 +5,14 @@
 # build directories
 cmake-build-debug/
 build/
+CMakeFiles
+cmake_install.cmake
+CMakeCache.txt
+gmock.pc
+gmock_main.pc
+gtest.pc
+gtest_main.pc
+Makefile
+
+# binaries
+durian_test
