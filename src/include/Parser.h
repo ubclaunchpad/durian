@@ -17,13 +17,13 @@ private:
         return m_currentToken = m_lexer.getToken();
     }
     // Parsers
-    std::unique_ptr<Statement> parseStatement();
+    std::unique_ptr<AST::Stmt> parseStatement();
     // Expressions
-    std::unique_ptr<Expression> parseExpression();
-    std::unique_ptr<Literal> parseLiteral();
+    std::unique_ptr<AST::Expr> parseExpression();
+    std::unique_ptr<AST::Expr> parseLiteral();
     // Basic statements
-    std::unique_ptr<Function> parseFunction();
-    std::unique_ptr<Return> parseReturn();
+    std::unique_ptr<AST::FnDecl> parseFunction();
+    std::unique_ptr<AST::ReturnStmt> parseReturn();
 };
 
 /*
