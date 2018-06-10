@@ -2,19 +2,24 @@
 
 #include <ostream>
 
-DurianObject::DurianObject() {
-    type = DurianType::Integer;
+DurianObject::DurianObject() :
+    type(DurianType::Integer) {
     value.ival = 0;
 }
 
-DurianObject::DurianObject(double dval) {
-    type = DurianType::Double;
+DurianObject::DurianObject(double dval) :
+    type(DurianType::Double) {
     value.dval = dval;
 }
 
-DurianObject::DurianObject(int64_t ival)  {
-    type = DurianType::Integer;
+DurianObject::DurianObject(int64_t ival) :
+    type(DurianType::Integer) {
     value.ival = ival;
+}
+
+DurianObject::DurianObject(bool bval) :
+    type(DurianType::Boolean) {
+    value.bval = bval;
 }
 
 std::ostream &operator<<(std::ostream &os, DurianType &type) {
@@ -26,7 +31,9 @@ std::ostream &operator<<(std::ostream &os, DurianType &type) {
         case DurianType::Double:
             os << "double";
             break;
+        case DurianType::Boolean:
+            os << "bool";
+            break;
     }
     return os;
 }
-
