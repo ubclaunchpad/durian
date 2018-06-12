@@ -1,122 +1,109 @@
 #include <Parser.h>
 
-Parser::Parser(Lexer lexer)
-    : m_lexer(std::move(lexer))
-    , m_currentToken(m_lexer.getToken())
+Parser::Parser(const Lexer lexer)
+    : m_lexer(lexer)
 {
 
 }
 
-void Parser::buildTree() {
-    parseStatement();
+std::unique_ptr<AST::Stmt> Parser::parse() {
+    return parseStmt();
 }
 
-std::unique_ptr<AST::Stmt> Parser::parseStatement() {
-    std::unique_ptr<AST::Stmt> statement;
-    Token identifier;
-    switch(m_currentToken.type) {
-        case TokenType::Def:
-            statement = parseFunction();
-        case TokenType::Return:
-            statement = parseReturn();
-        case TokenType::Identifier:
-            identifier = m_currentToken;
-            getNextToken();
-            switch(m_currentToken.type) {
-                case TokenType::LeftParen:
-                    getNextToken();
-            }
-            break;
-
-        // todo: other statements
-
-        default:
-            statement = parseExpression();
+std::unique_ptr<AST::Stmt> Parser::parseStmt(){
+    Token currTok = m_lexer.getToken();
+    if (currTok.type == TokenType::EOL || currTok.type == TokenType::END) {
+        // TODO what to do here
+        return nullptr;
     }
-    getNextToken();
-    return std::move(statement);
-}
-
-std::unique_ptr<AST::Expr> Parser::parseExpression() {
-    std::unique_ptr<AST::Expr> statement;
-    switch(m_currentToken.type) {
-        // Check for group
-        case TokenType::LeftParen:
-            getNextToken();
-            break;
-        case TokenType::RightParen:
-            // todo ummmm
-            statement = std::unique_ptr<AST::Expr>(nullptr);
-            break;
-
-        // If operator first, this is an unary expression
-        case TokenType::Plus:
-        case TokenType::Minus:
-        case TokenType::Ampersand:
-        case TokenType::Bang:
+    if (currTok.type == TokenType::If) {
         // TODO
-        default:
-            // Check for literal - if no literal, just return null
-            statement = parseLiteral();
-            if (!statement) break;
-            // Check for operator
-            switch(m_currentToken.type) {
-                case TokenType::Plus:
-                case TokenType::Minus:
-                case TokenType::Star:
-                case TokenType::Slash:
-                case TokenType::Ampersand:
-                case TokenType::Lesser:
-                case TokenType::LesserEqual:
-                case TokenType::Greater:
-                case TokenType::GreaterEqual:
-                case TokenType::Equal:
-                case TokenType::EqualEqual:
-                case TokenType::BangEqual:
-                case TokenType::And:
-                case TokenType::Or:
-                default:
-                    // Otherwise return literal
-                    break;
-            }
     }
-    getNextToken();
-    return std::move(statement);
-}
-
-std::unique_ptr<AST::Expr> Parser::parseLiteral() {
-    std::unique_ptr<AST::Expr> statement;
-    switch (m_currentToken.type) {
-        case TokenType::Integer:
-            statement = util::make_unique<AST::IntegerLit>(
-                    AST::IntegerLit(m_currentToken.literal));
-            break;
-        case TokenType::Float:
-            statement = util::make_unique<AST::FloatLit>(
-                    AST::FloatLit(m_currentToken.literal));
-            break;
-        case TokenType::String:
-            statement = util::make_unique<AST::StringLit>(
-                    AST::StringLit(m_currentToken.literal));
-            break;
-        case TokenType::True:
-        case TokenType::False:
-            statement = util::make_unique<AST::BooleanLit>(
-                    AST::BooleanLit(m_currentToken.literal));
-            break;
-        default:
-            // todo : exceptions, details
-            return std::unique_ptr<AST::Expr>(nullptr);
+    if (currTok.type == TokenType::While) {
+        std::unique_ptr<AST::Expr> expr = parseExpr();
+        currTok = m_lexer.getToken();
+        if (currTok.type != TokenType::LeftBrace) {
+            // TODO syntax error, synchronize
+        }
+        std::unique_ptr<AST::BlockStmt> body = parseBlockStmt();
+        return std::unique_ptr<AST::WhileStmt>(new AST::WhileStmt(std::move(expr), std::move(body)));
     }
-    getNextToken();
-    return std::move(statement);
+    if (currTok.type == TokenType::Next) {
+        currTok = m_lexer.getToken();
+        if (currTok.type != TokenType::EOL) {
+            // TODO syntax error, synchronize
+        }
+        return std::unique_ptr<AST::NextStmt>(new AST::NextStmt());
+    }
+    if (currTok.type == TokenType::Break) {
+        currTok = m_lexer.getToken();
+        if (currTok.type != TokenType::EOL) {
+            // TODO syntax error, synchronize
+        }
+        return std::unique_ptr<AST::BreakStmt>(new AST::BreakStmt());
+    }
+    if (currTok.type == TokenType::Let) {
+        // TODO
+    }
+    if (currTok.type == TokenType::Print) {
+        std::unique_ptr<AST::Expr> expr = parseExpr();
+        currTok = m_lexer.getToken();
+        if (currTok.type != TokenType::EOL) {
+            // TODO syntax error, synchronize
+        }
+        return std::unique_ptr<AST::PrintStmt>(new AST::PrintStmt(std::move(expr)));
+    }
+    if (currTok.type == TokenType::Err) {
+        std::unique_ptr<AST::Expr> expr = parseExpr();
+        currTok = m_lexer.getToken();
+        if (currTok.type != TokenType::EOL) {
+            // TODO syntax error, synchronize
+        }
+        return std::unique_ptr<AST::ErrStmt>(new AST::ErrStmt(std::move(expr)));
+    }
+    if (currTok.type == TokenType::Scan) {
+        // TODO
+        Token ident = m_lexer.getToken();
+        if (ident.type != TokenType::Identifier) {
+            // TODO syntax error, synchronize
+        }
+        currTok = m_lexer.getToken();
+        if (currTok.type != TokenType::EOL) {
+            // TODO syntax error, synchronize
+        }
+    }
+    if (currTok.type == TokenType::Def) {
+        // TODO
+    }
+    if (currTok.type == TokenType::Return) {
+        std::unique_ptr<AST::Expr> expr = parseExpr();
+        currTok = m_lexer.getToken();
+        if (currTok.type != TokenType::EOL) {
+            // TODO syntax error, synchronize
+        }
+        return std::unique_ptr<AST::ReturnStmt>(new AST::ReturnStmt(std::move(expr)));
+    }
+    // assignment or expr statement
+    std::unique_ptr<AST::Expr> expr = parseExpr();
+    currTok = m_lexer.getToken();
+    if (currTok.type == TokenType::EOL) {
+        return expr;
+    }
+    if (currTok.type == TokenType::Equal) {
+        std::unique_ptr<AST::Expr> rhs = parseExpr();
+        return std::unique_ptr<AST::AssignStmt>(new AST::AssignStmt(std::move(expr), std::move(rhs)));
+    }
+    // TODO error handling
+    return nullptr;
 }
 
-std::unique_ptr<AST::FnDecl> Parser::parseFunction() {
-    return std::unique_ptr<AST::FnDecl>(nullptr);
+
+std::unique_ptr<AST::BlockStmt> Parser::parseBlockStmt() {
+    // TODO
+    return nullptr;
 }
 
-std::unique_ptr<AST::ReturnStmt> Parser::parseReturn() {
-    return std::unique_ptr<AST::ReturnStmt>(nullptr);
+std::unique_ptr<AST::Expr> Parser::parseExpr() {
+    // TODO
+    return nullptr;
 }
-

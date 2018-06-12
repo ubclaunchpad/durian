@@ -7,23 +7,15 @@
 
 class Parser {
     Lexer m_lexer;
-    Token m_currentToken;
-
 public:
     explicit Parser(Lexer lexer);
-    void buildTree();
+    std::unique_ptr<AST::Stmt> parse();
 private:
-    Token getNextToken() {
-        return m_currentToken = m_lexer.getToken();
-    }
     // Parsers
-    std::unique_ptr<AST::Stmt> parseStatement();
-    // Expressions
-    std::unique_ptr<AST::Expr> parseExpression();
-    std::unique_ptr<AST::Expr> parseLiteral();
-    // Basic statements
-    std::unique_ptr<AST::FnDecl> parseFunction();
-    std::unique_ptr<AST::ReturnStmt> parseReturn();
+    std::unique_ptr<AST::Stmt> parseStmt();
+    std::unique_ptr<AST::IfStmt> parseIfStmt();
+    std::unique_ptr<AST::BlockStmt> parseBlockStmt();
+    std::unique_ptr<AST::Expr> parseExpr();
 };
 
 /*

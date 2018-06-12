@@ -10,11 +10,11 @@ class Lexer {
     uint32_t m_line;
 public:
     Lexer(const std::string input);
-    Token getToken();
+    const Token getToken();
 private:
-    bool isDigit(const char c);
-    bool isAlpha(const char c);
-    bool isIdentChar(const char c);
+    const bool isDigit(const char c);
+    const bool isAlpha(const char c);
+    const bool isIdentChar(const char c);
 };
 
 

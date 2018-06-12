@@ -9,6 +9,7 @@
 namespace AST {
 
 struct Stmt;
+struct BlockStmt;
 struct IfStmt;
 struct WhileStmt;
 struct NextStmt;
@@ -80,9 +81,9 @@ struct LetStmt : public Stmt {
 };
 
 struct AssignStmt : public Stmt {
-    std::unique_ptr<Identifier> m_ident;
+    std::unique_ptr<Expr> m_ident;
     std::unique_ptr<Expr> m_expr;
-    explicit AssignStmt(std::unique_ptr<Identifier> ident, std::unique_ptr<Expr> expr)
+    explicit AssignStmt(std::unique_ptr<Expr> ident, std::unique_ptr<Expr> expr)
         : m_ident(std::move(ident))
         , m_expr(std::move(expr)) { }
 };

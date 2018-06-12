@@ -8,7 +8,7 @@ Lexer::Lexer(const std::string input)
 
 }
 
-Token Lexer::getToken() {
+const Token Lexer::getToken() {
     std::string literal;
     if (m_iter == m_input.cend()) return Token {TokenType::END, m_line, ""};
     while (*m_iter == ' ') {
@@ -135,14 +135,14 @@ Token Lexer::getToken() {
     }
 }
 
-bool Lexer::isDigit(const char c) {
+const bool Lexer::isDigit(const char c) {
     return (isdigit(c) != 0);
 }
 
-bool Lexer::isAlpha(const char c) {
+const bool Lexer::isAlpha(const char c) {
     return (isalpha(c) != 0);
 }
 
-bool Lexer::isIdentChar(const char c) {
+const bool Lexer::isIdentChar(const char c) {
     return isDigit(c) || isAlpha(c) || c == '_';
 }
