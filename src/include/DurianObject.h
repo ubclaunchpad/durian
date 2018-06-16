@@ -2,13 +2,13 @@
 
 #include <cinttypes>
 #include <string>
-#ifndef DURIAN_DURIANOBJECT_H
-#define DURIAN_DURIANOBJECT_H
+#include <DurianString.h>
 
 enum struct DurianType {
     Double,
     Integer,
-    Boolean
+    Boolean,
+    String
 };
 
 struct DurianObject {
@@ -16,16 +16,15 @@ struct DurianObject {
     DurianObject(double dval);
     DurianObject(int64_t ival);
     DurianObject(bool bval);
+    DurianObject(unsigned char *sval, int64_t len);
     bool isFalsy() { return type == DurianType::Boolean && !value.bval; };
     DurianType type;
     union {
         double dval;
         int64_t ival;
         bool bval;
+        DurianString sval;
     } value;
 };
 
 std::ostream &operator<<(std::ostream &os, DurianType &type);
-
-
-#endif //DURIAN_DURIANOBJECT_H

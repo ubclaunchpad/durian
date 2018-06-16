@@ -17,13 +17,10 @@ VM::VM(unsigned char *bytecode) :
     // Do nothing.
 }
 
-VM::~VM() {
-
-}
+VM::~VM() {}
 
 
 int VM::run() {
-    //DurianObject a, b, v;
     while(true) {
         unsigned char opcode = nextBytecode();
         DURIAN_DEBUG_LOG("%x\n", opcode);
@@ -165,6 +162,19 @@ int VM::run() {
                     exit(EXIT_FAILURE);
                 }
                 break;
+            case Opcode::CNCT:
+                b = pop();
+                a = pop();
+                if (a.type == DurianType::String && b.type == DurianType::String) {
+                    push(DurianObject(a.value.sval.val /* TODO: Implement concat string */, a.value.sval.len + b.value.sval.len));
+                } else {
+                    std::cout << "TypeError: Invalid operand types for &: "
+                              << a.type
+                              << " and "
+                              << b.type
+                              << "." << std::endl;
+                    exit(EXIT_FAILURE);
+                }
             case Opcode::BR_F:
                 a = pop();
                 jumpLen = *reinterpret_cast<int32_t*>(m_code+m_pc);
@@ -180,14 +190,16 @@ int VM::run() {
                 else if (a.type == DurianType::Double)
                     printf("%f\n", a.value.dval);
                 else if (a.type == DurianType::Boolean)
-                    std::cout << (a.value.bval ? "true" : "false") << std::endl;
+                    std::cout << (a.value.bval ? "True" : "False") << std::endl;
+                else if (a.type == DurianType::String)
+                    printf("%s", a.value.sval.val);
                 else
                     std::cout << "Unknown Type";
                 break;
             // More cases here
             default:
                 // TODO: Handle when opcode is invalid. Perhaps raise error
-                return 1;
+                exit(EXIT_FAILURE);
         }
     }
 }
