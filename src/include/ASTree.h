@@ -9,6 +9,7 @@
 namespace AST {
 
 struct Stmt;
+struct BlockStmt;
 struct IfStmt;
 struct WhileStmt;
 struct NextStmt;
@@ -35,6 +36,7 @@ struct StringLit;
 struct BooleanLit;
 struct Identifier;
 struct FnCall;
+struct ExprStmt;
 
 struct Stmt { };
 
@@ -80,9 +82,9 @@ struct LetStmt : public Stmt {
 };
 
 struct AssignStmt : public Stmt {
-    std::unique_ptr<Identifier> m_ident;
+    std::unique_ptr<Expr> m_ident;
     std::unique_ptr<Expr> m_expr;
-    explicit AssignStmt(std::unique_ptr<Identifier> ident, std::unique_ptr<Expr> expr)
+    explicit AssignStmt(std::unique_ptr<Expr> ident, std::unique_ptr<Expr> expr)
         : m_ident(std::move(ident))
         , m_expr(std::move(expr)) { }
 };
@@ -234,6 +236,11 @@ struct FnCall : public Expr {
     explicit FnCall(std::unique_ptr<Identifier> ident, std::vector<std::unique_ptr<Expr>> args)
         : m_ident(std::move(ident))
         , m_args(std::move(args)) { }
+};
+
+struct ExprStmt : public Stmt {
+    std::unique_ptr<Expr> m_expr;
+    explicit ExprStmt(std::unique_ptr<Expr> expr) : m_expr(std::move(expr)) { }
 };
 
 }

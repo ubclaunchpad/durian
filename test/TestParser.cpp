@@ -9,5 +9,5 @@ def add(a, b) {
 }
 add(5, 6)
 )example"));
-    parser.buildTree();
+    parser.parse();
 }
