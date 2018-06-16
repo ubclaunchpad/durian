@@ -37,13 +37,13 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt(){
     }
 
     if (m_currenttoken.type == TokenType::Next) {
-        eattoken(TokenType ::Next);
+        eattoken(TokenType::Next);
         return std::unique_ptr<AST::NextStmt>(new AST::NextStmt());
     }
 
     if (m_currenttoken.type == TokenType::Break) {
         eattoken(TokenType::Break);
-        return std::unique_ptr<AST::NextStmt>(new AST::BreakStmt());
+        return std::unique_ptr<AST::BreakStmt>(new AST::BreakStmt());
     }
 
     if (m_currenttoken.type == TokenType::Let) {
