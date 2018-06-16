@@ -22,9 +22,7 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt(){
     if (m_currenttoken.type == TokenType::If) {
         eattoken(TokenType::If);
         std::unique_ptr<AST::Expr> cond = parseExpr();
-        eattoken(TokenType::LeftBrace);
         std::unique_ptr<AST::BlockStmt> body = parseBlockStmt();
-        eattoken(TokenType::RightBrace);
 
         return std::unique_ptr<AST::IfStmt>(new AST::IfStmt(std::move(cond), std::move(body), nullptr));
         // TODO handle else case
@@ -33,9 +31,7 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt(){
     if (m_currenttoken.type == TokenType::While) {
         eattoken(TokenType::While);
         std::unique_ptr<AST::Expr> cond = parseExpr();
-        eattoken(TokenType::LeftBrace);
         std::unique_ptr<AST::BlockStmt> body = parseBlockStmt();
-        eattoken(TokenType::RightBrace);
 
         return std::unique_ptr<AST::WhileStmt>(new AST::WhileStmt(std::move(cond), std::move(body)));
     }
@@ -106,8 +102,14 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt(){
 
 
 std::unique_ptr<AST::BlockStmt> Parser::parseBlockStmt() {
-    // TODO
-    return nullptr;
+    eattoken(TokenType::LeftBrace);
+    std::vector<std::unique_ptr<AST::Stmt>> statements;
+    while (m_currenttoken.type != TokenType::RightBrace) {
+        statements.push_back(parseStmt());
+        eattoken(TokenType::EOL);
+    }
+    eattoken(TokenType::RightBrace);
+    return std::unique_ptr<AST::BlockStmt>(new AST::BlockStmt(statements));
 }
 
 std::unique_ptr<AST::Expr> Parser::parseExpr() {
