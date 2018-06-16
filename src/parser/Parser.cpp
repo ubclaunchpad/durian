@@ -106,7 +106,7 @@ std::unique_ptr<AST::BlockStmt> Parser::parseBlockStmt() {
         eattoken(TokenType::EOL);
     }
     eattoken(TokenType::RightBrace);
-    return std::unique_ptr<AST::BlockStmt>(new AST::BlockStmt(statements));
+    return std::unique_ptr<AST::BlockStmt>(new AST::BlockStmt(std::move(statements)));
 }
 
 std::unique_ptr<AST::Expr> Parser::parseExpr() {
