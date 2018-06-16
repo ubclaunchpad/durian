@@ -36,6 +36,7 @@ struct StringLit;
 struct BooleanLit;
 struct Identifier;
 struct FnCall;
+struct ExprStmt;
 
 struct Stmt { };
 
@@ -235,6 +236,11 @@ struct FnCall : public Expr {
     explicit FnCall(std::unique_ptr<Identifier> ident, std::vector<std::unique_ptr<Expr>> args)
         : m_ident(std::move(ident))
         , m_args(std::move(args)) { }
+};
+
+struct ExprStmt : public Stmt {
+    std::unique_ptr<Expr> m_expr;
+    explicit ExprStmt(std::unique_ptr<Expr> expr) : m_expr(std::move(expr)) { }
 };
 
 }

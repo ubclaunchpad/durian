@@ -12,6 +12,8 @@ public:
     std::unique_ptr<AST::Stmt> parse();
 private:
     // Parsers
+    Token m_currenttoken;
+    Token eattoken(TokenType t);
     std::unique_ptr<AST::Stmt> parseStmt();
     std::unique_ptr<AST::IfStmt> parseIfStmt();
     std::unique_ptr<AST::BlockStmt> parseBlockStmt();
