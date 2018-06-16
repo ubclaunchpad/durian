@@ -22,13 +22,7 @@ struct ScanStmt;
 struct FnDecl;
 struct ReturnStmt;
 struct Expr;
-struct OrExpr;
-struct AndExpr;
-struct EqExpr;
-struct CompExpr;
-struct ConcatExpr;
-struct AddExpr;
-struct MulExpr;
+struct BinaryExpr;
 struct UnaryExpr;
 struct IntegerLit;
 struct FloatLit;
@@ -130,66 +124,11 @@ struct ReturnStmt : public Stmt {
 
 struct Expr : public Stmt { };
 
-struct OrExpr : public Expr {
-    std::unique_ptr<Expr> m_left;
-    std::unique_ptr<Expr> m_right;
-    explicit OrExpr(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
-        : m_left(std::move(left))
-        , m_right(std::move(right)) { }
-};
-
-struct AndExpr : public Expr {
-    std::unique_ptr<Expr> m_left;
-    std::unique_ptr<Expr> m_right;
-    explicit AndExpr(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
-        : m_left(std::move(left))
-        , m_right(std::move(right)) { }
-};
-
-struct EqExpr : public Expr {
+struct BinaryExpr : public Expr {
     TokenType m_op;
     std::unique_ptr<Expr> m_left;
     std::unique_ptr<Expr> m_right;
-    explicit EqExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
-        : m_op(op)
-        , m_left(std::move(left))
-        , m_right(std::move(right)) { }
-};
-
-struct CompExpr : public Expr {
-    TokenType m_op;
-    std::unique_ptr<Expr> m_left;
-    std::unique_ptr<Expr> m_right;
-    explicit CompExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
-        : m_op(op)
-        , m_left(std::move(left))
-        , m_right(std::move(right)) { }
-};
-
-struct ConcatExpr : public Expr {
-    std::unique_ptr<Expr> m_left;
-    std::unique_ptr<Expr> m_right;
-    explicit ConcatExpr(std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
-        : m_left(std::move(left))
-        , m_right(std::move(right)) { }
-};
-
-struct AddExpr : public Expr {
-    TokenType m_op;
-    std::unique_ptr<Expr> m_left;
-    std::unique_ptr<Expr> m_right;
-    explicit AddExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
-        : m_op(op)
-        , m_left(std::move(left))
-        , m_right(std::move(right)) { }
-
-};
-
-struct MulExpr : public Expr {
-    TokenType m_op;
-    std::unique_ptr<Expr> m_left;
-    std::unique_ptr<Expr> m_right;
-    explicit MulExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
+    explicit BinaryExpr(TokenType op, std::unique_ptr<Expr> left, std::unique_ptr<Expr> right)
         : m_op(op)
         , m_left(std::move(left))
         , m_right(std::move(right)) { }
