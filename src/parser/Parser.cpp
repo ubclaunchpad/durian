@@ -77,11 +77,8 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt(){
     }
 
     if (m_currenttoken.type == TokenType::Return) {
+        eattoken(TokenType::Return);
         std::unique_ptr<AST::Expr> expr = parseExpr();
-        m_currenttoken = m_lexer.getToken();
-        if (m_currenttoken.type != TokenType::EOL) {
-            // TODO syntax error, synchronize
-        }
         return std::unique_ptr<AST::ReturnStmt>(new AST::ReturnStmt(std::move(expr)));
     }
 
