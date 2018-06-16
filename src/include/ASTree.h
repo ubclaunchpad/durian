@@ -153,15 +153,13 @@ struct FloatLit: public Expr {
 };
 
 struct StringLit: public Expr {
-    std::string m_value;
+    const std::string m_value;
     explicit StringLit(const std::string &value) : m_value(value) { }
 };
 
 struct BooleanLit: public Expr {
     bool m_value;
-    explicit BooleanLit(const std::string &value) {
-        std::istringstream(value) >> std::boolalpha >> m_value;
-    }
+    explicit BooleanLit(bool val) : m_value(val) { }
 };
 
 struct Identifier : public Expr {
