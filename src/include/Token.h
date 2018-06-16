@@ -26,6 +26,9 @@ enum struct TokenType {
     Print, Scan, Err,
 
     // Control tokens
+    // Note: END represents EOF;
+    // however EOF is defined as a macro in the standard library
+    // and so is unusable here
     EOL, END, Error
 };
 
