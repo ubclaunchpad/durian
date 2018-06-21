@@ -16,7 +16,7 @@ struct DurianObject {
     DurianObject(double dval);
     DurianObject(int64_t ival);
     DurianObject(bool bval);
-    DurianObject(unsigned char *sval, int64_t len);
+    DurianObject(int32_t len, unsigned char *sval);
     bool isFalsy() { return type == DurianType::Boolean && !value.bval; };
     DurianType type;
     union {

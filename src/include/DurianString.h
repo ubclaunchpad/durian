@@ -2,6 +2,6 @@
 
 class DurianString {
 public:
-    int64_t len;
+    int32_t len;
     unsigned char *val;
 };

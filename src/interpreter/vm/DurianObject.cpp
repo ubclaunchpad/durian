@@ -22,7 +22,7 @@ DurianObject::DurianObject(bool bval) :
     value.bval = bval;
 }
 
-DurianObject::DurianObject(unsigned char *sval, int64_t len) :
+DurianObject::DurianObject(int32_t len, unsigned char *sval) :
     type(DurianType::String) {
     value.sval.val = sval;
     value.sval.len = len;
