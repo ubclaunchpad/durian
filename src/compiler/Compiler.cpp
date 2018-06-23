@@ -6,7 +6,7 @@ void Compiler::visit(AST::AssignStmt *node);
 void Compiler::visit(AST::BinaryExpr *node) {
     visit(node->m_right);
     visit(node->m_left);
-    m_buffer.push_back(node->m_op);
+    m_buffer.push_back(node->m_op.getBinOpcode());
 }
 void Compiler::visit(AST::BlockStmt *node);
 void Compiler::visit(AST::BooleanLit *node);
