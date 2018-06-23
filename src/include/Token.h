@@ -84,7 +84,10 @@ struct Token {
     }
     unsigned char getBinOpcode() {
         switch (type) {
-            case :
+            case TokenType::Ampersand:
+                return Opcode::CNCT;
+            case TokenType::Plus:
+                return Opcode::ADD;
         }
     }
 };
