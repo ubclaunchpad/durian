@@ -3,7 +3,11 @@
 Compiler::Compiler(Parser parser) : m_parser(parser) {}
 
 void Compiler::visit(AST::AssignStmt *node);
-void Compiler::visit(AST::BinaryExpr *node);
+void Compiler::visit(AST::BinaryExpr *node) {
+    visit(node->m_right);
+    visit(node->m_left);
+    // push opcode for binop.
+}
 void Compiler::visit(AST::BlockStmt *node);
 void Compiler::visit(AST::BooleanLit *node);
 void Compiler::visit(AST::BreakStmt *node);

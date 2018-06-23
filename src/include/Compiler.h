@@ -6,6 +6,7 @@
 class Compiler {
     Parser m_parser;
     std::vector<unsigned char> m_bytecode;
+    std::vector<unsigned char> m_header;
 public:
     explicit Compiler(Parser parser);
 private:
