@@ -96,7 +96,6 @@ struct Token {
                 return Opcode::FDIV;
             case TokenType::EqualEqual:
                 return Opcode::EQ;
-            case :
         }
     }
 };
