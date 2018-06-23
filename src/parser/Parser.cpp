@@ -227,7 +227,7 @@ std::unique_ptr<AST::Expr> Parser::parseAddExpr() {
 
 std::unique_ptr<AST::Expr> Parser::parseMulExpr() {
     auto expr = parseUnaryExpr();
-    while (m_currToken.type == TokenType::Plus || m_currToken.type == TokenType::Minus) {
+    while (m_currToken.type == TokenType::Star || m_currToken.type == TokenType::Slash) {
         TokenType op = m_currToken.type;
         eatToken(m_currToken.type);
         auto right = parseUnaryExpr();

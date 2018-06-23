@@ -32,7 +32,9 @@ struct Identifier;
 struct FnCall;
 struct ExprStmt;
 
-struct Stmt { };
+struct Stmt {
+    virtual ~Stmt() = default;
+};
 
 struct BlockStmt : public Stmt {
     std::vector<std::unique_ptr<Stmt>> m_statements;
