@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <opcode.h>
 
 enum struct TokenType {
     // Delimiters
@@ -79,6 +80,23 @@ struct Token {
             case TokenType::EOL: return "EOL";
             case TokenType::END: return "EOF";
             case TokenType::Error: return literal;
+        }
+    }
+    unsigned char getBinOpcode() {
+        switch (type) {
+            case TokenType::Ampersand:
+                return Opcode::CNCT;
+            case TokenType::Plus:
+                return Opcode::ADD;
+            case TokenType::Minus:
+                return Opcode::SUB;
+            case TokenType::Star:
+                return Opcode::MUL;
+            case TokenType::Slash:
+                return Opcode::FDIV;
+            case TokenType::EqualEqual:
+                return Opcode::EQ;
+            // TODO: other cases
         }
     }
 };
