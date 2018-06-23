@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 
+
 enum struct TokenType {
     // Delimiters
     Comma, LeftBrace, RightBrace, LeftParen, RightParen,
@@ -79,6 +80,11 @@ struct Token {
             case TokenType::EOL: return "EOL";
             case TokenType::END: return "EOF";
             case TokenType::Error: return literal;
+        }
+    }
+    unsigned char getBinOpcode() {
+        switch (type) {
+            case :
         }
     }
 };
