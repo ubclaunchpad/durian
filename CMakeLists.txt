@@ -22,6 +22,10 @@ add_executable(VM
         src/interpreter/vm/DurianObject.cpp
         src/interpreter/vm/VM.cpp)
 
+add_executable(pretty_printer
+        src/pretty_printer/main.cpp
+        ${SOURCE_FILES})
+
 add_executable(durian_test
         ${SOURCE_FILES}
         ${TEST_FILES})
