@@ -12,9 +12,9 @@ public:
     Lexer(const std::string input);
     const Token getToken();
 private:
-    const bool isDigit(const char c);
-    const bool isAlpha(const char c);
-    const bool isIdentChar(const char c);
+    bool isDigit(const char c) const;
+    bool isAlpha(const char c) const;
+    bool isIdentChar(const char c) const;
 };
 
 
