@@ -4,7 +4,7 @@
 #include <ASTree.h>
 
 class Visitor {
-private:
+public:
     virtual void visit(AST::AssignStmt *node) = 0;
     virtual void visit(AST::BinaryExpr *node) = 0;
     virtual void visit(AST::BlockStmt *node) = 0;
