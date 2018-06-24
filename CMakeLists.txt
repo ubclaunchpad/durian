@@ -11,7 +11,8 @@ add_subdirectory(googletest/)
 
 set(SOURCE_FILES
         src/lexer/Lexer.cpp
-        src/parser/Parser.cpp)
+        src/parser/Parser.cpp
+        src/pretty_printer/PrettyPrinter.cpp)
 
 set(TEST_FILES
         test/TestLexer.cpp test/TestParser.cpp)
@@ -41,7 +42,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
     target_compile_options(durian_test PRIVATE -Wall -Wextra -Wunreachable-code -Wpedantic)
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(durian_test PRIVATE -Wweak-vtables -Wexit-time-destructors -Wglobal-constructors -Wmissing-noreturn )
+    target_compile_options(durian_test PRIVATE -Wexit-time-destructors -Wmissing-noreturn )
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(durian_test PRIVATE /W4 /w44265 /w44061 /w44062 )
