@@ -254,25 +254,23 @@ std::unique_ptr<AST::Expr> Parser::parseUnaryExpr() {
         eatToken(TokenType::RightParen);
         return expr;
     } else if (m_currToken.type == TokenType::String) {
-        auto lit = std::unique_ptr<AST::StringLit>(new AST::StringLit(m_currToken.literal));
+        std::string lit = m_currToken.literal;
         eatToken(m_currToken.type);
-        return lit;
+        return std::unique_ptr<AST::StringLit>(new AST::StringLit(lit));
     } else if (m_currToken.type == TokenType::Integer) {
-        auto lit = std::unique_ptr<AST::IntegerLit>(new AST::IntegerLit(m_currToken.literal));
+        std::string lit = m_currToken.literal;
         eatToken(m_currToken.type);
-        return lit;
+        return std::unique_ptr<AST::IntegerLit>(new AST::IntegerLit(lit));
     } else if (m_currToken.type == TokenType::Float) {
-        auto lit = std::unique_ptr<AST::FloatLit>(new AST::FloatLit(m_currToken.literal));
+        std::string lit = m_currToken.literal;
         eatToken(m_currToken.type);
-        return lit;
+        return std::unique_ptr<AST::FloatLit>(new AST::FloatLit(lit));
     } else if (m_currToken.type == TokenType::True) {
-        auto lit = std::unique_ptr<AST::BooleanLit>(new AST::BooleanLit(true));
         eatToken(m_currToken.type);
-        return lit;
+        return std::unique_ptr<AST::BooleanLit>(new AST::BooleanLit(true));
     } else if (m_currToken.type == TokenType::False) {
-        auto lit = std::unique_ptr<AST::BooleanLit>(new AST::BooleanLit(false));
         eatToken(m_currToken.type);
-        return lit;
+        return std::unique_ptr<AST::BooleanLit>(new AST::BooleanLit(false));
     } else if (m_currToken.type == TokenType::Identifier) {
         auto id = std::unique_ptr<AST::Identifier>(new AST::Identifier(m_currToken.literal));
         eatToken(m_currToken.type);
@@ -289,7 +287,7 @@ std::unique_ptr<AST::Expr> Parser::parseUnaryExpr() {
             }
             return std::unique_ptr<AST::FnCall>(new AST::FnCall(std::move(id), std::move(args)));
         }
-        return id;
+        return static_cast<std::unique_ptr<AST::Expr>>(std::move(id));
     }
     return nullptr;
 }
