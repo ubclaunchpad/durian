@@ -17,6 +17,7 @@ public:
     virtual void visit(AST::FnDecl *node) = 0;
     virtual void visit(AST::Identifier *node) = 0;
     virtual void visit(AST::IfStmt *node) = 0;
+    virtual void visit(AST::IntegerLit *node) = 0;
     virtual void visit(AST::LetStmt *node) = 0;
     virtual void visit(AST::NextStmt *node) = 0;
     virtual void visit(AST::PrintStmt *node) = 0;
