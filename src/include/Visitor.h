@@ -1,7 +1,31 @@
 #pragma once
 
-#include <Parser.h>
-#include <ASTree.h>
+namespace AST {
+    // hacky way around C++ limitations
+    struct Stmt;
+    struct BlockStmt;
+    struct IfStmt;
+    struct WhileStmt;
+    struct NextStmt;
+    struct BreakStmt;
+    struct LetStmt;
+    struct AssignStmt;
+    struct PrintStmt;
+    struct ErrStmt;
+    struct ScanStmt;
+    struct FnDecl;
+    struct ReturnStmt;
+    struct Expr;
+    struct BinaryExpr;
+    struct UnaryExpr;
+    struct IntegerLit;
+    struct FloatLit;
+    struct StringLit;
+    struct BooleanLit;
+    struct Identifier;
+    struct FnCall;
+    struct ExprStmt;
+}
 
 class Visitor {
 public:
