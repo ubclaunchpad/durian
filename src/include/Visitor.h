@@ -1,10 +1,34 @@
 #pragma once
 
-#include <Parser.h>
-#include <ASTree.h>
+namespace AST {
+    // hacky way around C++ limitations
+    struct Stmt;
+    struct BlockStmt;
+    struct IfStmt;
+    struct WhileStmt;
+    struct NextStmt;
+    struct BreakStmt;
+    struct LetStmt;
+    struct AssignStmt;
+    struct PrintStmt;
+    struct ErrStmt;
+    struct ScanStmt;
+    struct FnDecl;
+    struct ReturnStmt;
+    struct Expr;
+    struct BinaryExpr;
+    struct UnaryExpr;
+    struct IntegerLit;
+    struct FloatLit;
+    struct StringLit;
+    struct BooleanLit;
+    struct Identifier;
+    struct FnCall;
+    struct ExprStmt;
+}
 
 class Visitor {
-private:
+public:
     virtual void visit(AST::AssignStmt *node) = 0;
     virtual void visit(AST::BinaryExpr *node) = 0;
     virtual void visit(AST::BlockStmt *node) = 0;
@@ -17,6 +41,7 @@ private:
     virtual void visit(AST::FnDecl *node) = 0;
     virtual void visit(AST::Identifier *node) = 0;
     virtual void visit(AST::IfStmt *node) = 0;
+    virtual void visit(AST::IntegerLit *node) = 0;
     virtual void visit(AST::LetStmt *node) = 0;
     virtual void visit(AST::NextStmt *node) = 0;
     virtual void visit(AST::PrintStmt *node) = 0;

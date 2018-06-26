@@ -1,10 +1,12 @@
 #pragma once
 
 #include <Token.h>
-#include <vector>
+#include <Visitor.h>
+
 #include <ios>
-#include <sstream>
 #include <memory>
+#include <sstream>
+#include <vector>
 
 namespace AST {
 
@@ -34,12 +36,14 @@ struct ExprStmt;
 
 struct Stmt {
     virtual ~Stmt() = default;
+    virtual void accept(Visitor *visitor) = 0;
 };
 
 struct BlockStmt : public Stmt {
     std::vector<std::unique_ptr<Stmt>> m_statements;
     explicit BlockStmt(std::vector<std::unique_ptr<Stmt>> statements)
         : m_statements(std::move(statements)) { }
+    virtual void accept(Visitor *visitor) { visitor->visit(this); }
 };
 
 struct IfStmt : public Stmt {
@@ -55,6 +59,7 @@ struct IfStmt : public Stmt {
         : m_condition(std::move(condition))
         , m_trueBody(std::move(trueBody))
         , m_falseBody(std::move(falseBody)) { }
+    virtual void accept(Visitor *visitor) { visitor->visit(this); }
 };
 
 struct WhileStmt : public Stmt {
@@ -63,11 +68,16 @@ struct WhileStmt : public Stmt {
     explicit WhileStmt(std::unique_ptr<Expr> condition, std::unique_ptr<BlockStmt> body)
         : m_condition(std::move(condition))
         , m_body(std::move(body)) { }
+    virtual void accept(Visitor *visitor) { visitor->visit(this); }
 };
 
-struct NextStmt : public Stmt { };
+struct NextStmt : public Stmt {
+    virtual void accept(Visitor *visitor) { visitor->visit(this); }
+};
 
-struct BreakStmt : public Stmt { };
+struct BreakStmt : public Stmt {
+    virtual void accept(Visitor *visitor) { visitor->visit(this); }
+};
 
 struct LetStmt : public Stmt {
     std::unique_ptr<Identifier> m_ident;
@@ -75,6 +85,7 @@ struct LetStmt : public Stmt {
     explicit LetStmt(std::unique_ptr<Identifier> ident, std::unique_ptr<Expr> expr)
         : m_ident(std::move(ident))
         , m_expr(std::move(expr)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct AssignStmt : public Stmt {
@@ -83,24 +94,28 @@ struct AssignStmt : public Stmt {
     explicit AssignStmt(std::unique_ptr<Expr> ident, std::unique_ptr<Expr> expr)
         : m_ident(std::move(ident))
         , m_expr(std::move(expr)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct PrintStmt : public Stmt {
     std::unique_ptr<Expr> m_expr;
     explicit PrintStmt(std::unique_ptr<Expr> expr)
         : m_expr(std::move(expr)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct ErrStmt : public Stmt {
     std::unique_ptr<Expr> m_expr;
     explicit ErrStmt(std::unique_ptr<Expr> expr)
        : m_expr(std::move(expr)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct ScanStmt : public Stmt {
     std::unique_ptr<Identifier> m_ident;
     explicit ScanStmt(std::unique_ptr<Identifier> ident)
         : m_ident(std::move(ident)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct FnDecl : public Stmt {
@@ -113,12 +128,14 @@ struct FnDecl : public Stmt {
         : m_ident(std::move(ident))
         , m_params(std::move(params))
         , m_body(std::move(body)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct ReturnStmt : public Stmt {
     std::unique_ptr<Expr> m_expr;
     explicit ReturnStmt(std::unique_ptr<Expr> expr)
         : m_expr(std::move(expr)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 //////////////////////////////////////////
@@ -134,6 +151,7 @@ struct BinaryExpr : public Expr {
         : m_op(op)
         , m_left(std::move(left))
         , m_right(std::move(right)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct UnaryExpr : public Expr {
@@ -142,31 +160,37 @@ struct UnaryExpr : public Expr {
     explicit UnaryExpr(TokenType op, std::unique_ptr<Expr> operand)
         : m_op(op)
         , m_operand(std::move(operand)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct IntegerLit: public Expr {
     int64_t m_value;
     explicit IntegerLit(const std::string &value) : m_value(std::stoll(value)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct FloatLit: public Expr {
     double m_value;
     explicit FloatLit(const std::string &value) : m_value(std::stod(value)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct StringLit: public Expr {
     const std::string m_value;
     explicit StringLit(const std::string &value) : m_value(value) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct BooleanLit: public Expr {
     bool m_value;
     explicit BooleanLit(bool val) : m_value(val) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct Identifier : public Expr {
     const std::string m_identStr;
     explicit Identifier(const std::string identStr) : m_identStr(identStr) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct FnCall : public Expr {
@@ -175,11 +199,13 @@ struct FnCall : public Expr {
     explicit FnCall(std::unique_ptr<Identifier> ident, std::vector<std::unique_ptr<Expr>> args)
         : m_ident(std::move(ident))
         , m_args(std::move(args)) { }
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 struct ExprStmt : public Stmt {
     std::unique_ptr<Expr> m_expr;
-    explicit ExprStmt(std::unique_ptr<Expr> expr) : m_expr(std::move(expr)) { }
+    explicit ExprStmt(std::unique_ptr<Expr> expr) : m_expr(std::move(expr)) {}
+    virtual void accept(Visitor* visitor) { visitor->visit(this); }
 };
 
 }
