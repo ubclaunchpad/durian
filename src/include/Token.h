@@ -111,6 +111,16 @@ struct Token {
             // TODO: other cases
         }
     }
+    unsigned char getUnOpcode() {
+        switch (type) {
+            case TokenType::Plus:
+                return Opcode::POS;
+            case TokenType::Minus:
+                return Opcode::NEG;
+            case TokenType::Bang:
+                return Opcode::NEG;
+        }
+    }
 };
 
 
