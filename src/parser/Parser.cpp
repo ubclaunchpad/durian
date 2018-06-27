@@ -20,6 +20,9 @@ std::unique_ptr<AST::Stmt> Parser::parse() {
 }
 
 std::unique_ptr<AST::Stmt> Parser::parseStmt() {
+    if (m_currToken.type == TokenType::END) {
+        return nullptr;
+    }
     if (m_currToken.type == TokenType::EOL) {
         eatToken(TokenType::EOL);
         return parseStmt();
@@ -93,7 +96,8 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt() {
 
     if (m_currToken.type == TokenType::Def) {
         eatToken(TokenType::Def);
-        Token id = eatToken(TokenType::Identifier);
+        Token id = m_currToken;
+        eatToken(TokenType::Identifier);
         eatToken(TokenType::LeftParen);
         std::vector<std::unique_ptr<AST::Identifier>> params;
         while (m_currToken.type != TokenType::RightParen) {

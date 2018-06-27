@@ -64,6 +64,9 @@ void PrettyPrinter::visit(AST::FnCall *node) {
     std::cout << " with args ";
     for (auto iter = node->m_args.cbegin(); iter != node->m_args.cend(); ++iter) {
         iter->get()->accept(this);
+        if (iter + 1 != node->m_args.cend()) {
+            std::cout << " ";
+        }
     }
     std::cout << ")";
 };
@@ -74,6 +77,9 @@ void PrettyPrinter::visit(AST::FnDecl *node) {
     std::cout << " with params ";
     for (auto iter = node->m_params.cbegin(); iter != node->m_params.cend(); ++iter) {
         iter->get()->accept(this);
+        if (iter + 1 != node->m_params.cend()) {
+            std::cout << " ";
+        }
     }
     std::cout << " and body ";
     node->m_body->accept(this);
@@ -120,7 +126,9 @@ void PrettyPrinter::visit(AST::PrintStmt *node) {
 };
 
 void PrettyPrinter::visit(AST::ReturnStmt *node) {
-    std::cout << "return;" << std::endl;
+    std::cout << "return ";
+    node->m_expr->accept(this);
+    std::cout << ";" << std::endl;
 };
 
 void PrettyPrinter::visit(AST::ScanStmt *node) {

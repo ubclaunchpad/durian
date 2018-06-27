@@ -10,7 +10,7 @@ Lexer::Lexer(const std::string input)
 
 const Token Lexer::getToken() {
     std::string literal;
-    if (m_iter == m_input.cend()) return Token {TokenType::END, m_line, ""};
+    if (m_iter == m_input.cend() || *m_iter =='\0') return Token {TokenType::END, m_line, ""};
     while (*m_iter == ' ') {
         ++m_iter;
     }

@@ -15,11 +15,19 @@ int main() {
             fin = true;
         } else {
             input += temp;
+            input += "\n";
         }
     }
     Parser parser {Lexer(input)};
-    auto ast = parser.parse();
     PrettyPrinter pp;
-    ast->accept(&pp);
+    bool done = false;
+    while (!done) {
+        auto ast = parser.parse();
+        if (ast == nullptr) {
+            done = true;
+        } else {
+            ast->accept(&pp);
+        }
+    }
     return 0;
 }
