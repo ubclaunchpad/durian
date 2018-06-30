@@ -10,7 +10,7 @@ Lexer::Lexer(const std::string input)
 
 const Token Lexer::getToken() {
     std::string literal;
-    if (m_iter == m_input.cend()) return Token {TokenType::END, m_line, ""};
+    if (m_iter == m_input.cend() || *m_iter =='\0') return Token {TokenType::END, m_line, ""};
     while (*m_iter == ' ') {
         ++m_iter;
     }
@@ -131,18 +131,18 @@ const Token Lexer::getToken() {
                 if (literal == "err") return Token {TokenType::Err, m_line, ""};
                 return Token {TokenType::Identifier, m_line, literal};
             }
-            return Token {TokenType::Error, m_line, "Unexpected character" };
+            return Token {TokenType::Error, m_line, std::string(&c)};
     }
 }
 
-const bool Lexer::isDigit(const char c) {
+bool Lexer::isDigit(const char c) const {
     return (isdigit(c) != 0);
 }
 
-const bool Lexer::isAlpha(const char c) {
+bool Lexer::isAlpha(const char c) const {
     return (isalpha(c) != 0);
 }
 
-const bool Lexer::isIdentChar(const char c) {
+bool Lexer::isIdentChar(const char c) const {
     return isDigit(c) || isAlpha(c) || c == '_';
 }
