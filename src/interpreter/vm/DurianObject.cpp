@@ -24,8 +24,8 @@ DurianObject::DurianObject(bool bval) :
 
 DurianObject::DurianObject(int32_t len, unsigned char *sval) :
     type(DurianType::String) {
-    value.sval.val = sval;
-    value.sval.len = len;
+    value.sval.p_val = sval;
+    value.sval.m_len = len;
 }
 
 std::ostream &operator<<(std::ostream &os, DurianType &type) {

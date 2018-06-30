@@ -25,15 +25,15 @@ int VM::run() {
         unsigned char opcode = nextBytecode();
         DURIAN_DEBUG_LOG("%x\n", opcode);
         DurianObject a, b;
-        int32_t jump_len; // Jump length
-        unsigned char *p_str; // String (length: 8 bytes, value: length bytes) pointer
+        int32_t jumpLen; // Jump length
+        unsigned char *p_headerStr; // String (length: 8 bytes, value: length bytes) pointer
         switch (opcode) {
             case Opcode::HALT: return 0;
             case Opcode::NOP: break;
             case Opcode::NEWSTR8:
-                p_str = m_code + *reinterpret_cast<int32_t*>(m_code + m_pc); // m_code + headerOffset
+                p_headerStr = m_code + *reinterpret_cast<int32_t*>(m_code + m_pc); // m_code + headerOffset
                 m_pc += sizeof(int32_t);
-                push(DurianObject(*reinterpret_cast<int32_t*>(p_str), p_str + sizeof(int32_t)));
+                push(DurianObject(*reinterpret_cast<int32_t*>(p_headerStr), p_headerStr + sizeof(int32_t)));
                 break;
             case Opcode::ICONST:
                 push(*reinterpret_cast<int64_t*>(m_code+m_pc));
@@ -172,7 +172,7 @@ int VM::run() {
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::String && b.type == DurianType::String) {
-                    push(DurianObject(a.value.sval.len /* + b.value.sval.len */, a.value.sval.val /* TODO: Implement concat string */));
+                    push(DurianObject(a.value.sval.m_len /* + b.value.sval.m_len */, a.value.sval.p_val /* TODO: Implement concat string */));
                 } else {
                     std::cout << "TypeError: Invalid operand types for &: "
                               << a.type
@@ -183,10 +183,10 @@ int VM::run() {
                 }
             case Opcode::BR_F:
                 a = pop();
-                jump_len = *reinterpret_cast<int32_t*>(m_code+m_pc);
+                jumpLen = *reinterpret_cast<int32_t*>(m_code+m_pc);
                 m_pc += sizeof(int32_t);
                 if (a.isFalsy()) {
-                    m_pc += jump_len;
+                    m_pc += jumpLen;
                 }
                 break;
             case Opcode::PRINT:
@@ -198,7 +198,7 @@ int VM::run() {
                 else if (a.type == DurianType::Boolean)
                     std::cout << (a.value.bval ? "True" : "False") << std::endl;
                 else if (a.type == DurianType::String)
-                    printf("%.*s\n", a.value.sval.len, a.value.sval.val);
+                    printf("%.*s\n", a.value.sval.m_len, a.value.sval.p_val);
                 else {
                     std::cout << "TypeError: Invalid operand types for print: "
                               << a.type
