@@ -39,7 +39,7 @@ void PrettyPrinter::visit(AST::BooleanLit *node) {
     }
 };
 
-void PrettyPrinter::visit(AST::BreakStmt *node) {
+void PrettyPrinter::visit(AST::BreakStmt*) {
     std::cout << "break;" << std::endl;
 };
 
@@ -115,7 +115,7 @@ void PrettyPrinter::visit(AST::LetStmt *node) {
     std::cout << ";" << std::endl;
 };
 
-void PrettyPrinter::visit(AST::NextStmt *node) {
+void PrettyPrinter::visit(AST::NextStmt*) {
     std::cout << "next;" << std::endl;
 };
 
