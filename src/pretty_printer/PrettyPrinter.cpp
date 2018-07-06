@@ -1,9 +1,9 @@
 #include <PrettyPrinter.h>
 
+#include <ASTree.h>
 #include <Token.h>
 
 #include <iostream>
-#include <ASTree.h>
 
 void PrettyPrinter::PrettyPrinter::visit(AST::AssignStmt *node) {
     std::cout << "assign ";
@@ -24,9 +24,9 @@ void PrettyPrinter::visit(AST::BinaryExpr *node) {
 
 void PrettyPrinter::visit(AST::BlockStmt *node) {
     std::cout << "{" << std::endl;
-    for (auto iter = node->m_statements.cbegin(); iter != node->m_statements.cend(); ++iter) {
+    for (auto& statement : node->m_statements) {
         std::cout << "    ";
-        iter->get()->accept(this);
+        statement->accept(this);
     }
     std::cout << "};" << std::endl;
 };
