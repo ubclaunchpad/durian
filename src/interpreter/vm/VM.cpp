@@ -17,9 +17,6 @@ VM::VM(unsigned char *bytecode) :
     // Do nothing.
 }
 
-VM::~VM() {}
-
-
 int VM::run() {
     while(true) {
         unsigned char opcode = nextBytecode();

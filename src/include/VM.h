@@ -5,7 +5,7 @@
 class VM {
     public:
         VM(unsigned char *);
-        ~VM();
+        ~VM() = default;
         int run();
     private:
         int m_pc;                  // Program Counter
