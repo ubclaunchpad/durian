@@ -12,15 +12,21 @@ addons:
     packages:
       - clang-5.0
       - g++-7
+      - lcov
 compiler:
-  - clang # todo: choose compiler
+  - gcc # todo: choose compiler
 env:
   - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
 install:
   - git submodule update --init --recursive
-
 script:
-  - mkdir build ; cd build ; cmake ..
+  - mkdir build ; cd build ; cmake -DCMAKE_BUILD_TYPE=Debug ..
   - make
   - ./durian_test
+after_success:
+  - cd ${TRAVIS_BUILD_DIR}
+  - lcov --directory . --capture --output-file coverage.info # capture coverage info
+  - lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter out system
+  - lcov --list coverage.info #debug info
+  - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
