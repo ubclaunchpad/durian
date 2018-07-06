@@ -1,4 +1,7 @@
+
 # 🍍 durian
+
+[![codecov](https://codecov.io/gh/ubclaunchpad/durian/branch/master/graph/badge.svg)](https://codecov.io/gh/ubclaunchpad/durian)
 
 ## Anatomy of a Durian
 
