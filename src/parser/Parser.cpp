@@ -7,7 +7,7 @@ Parser::Parser(const Lexer lexer)
     m_currToken = m_lexer.getToken();
 }
 
-Token Parser::eatToken(TokenType tok) {
+Token Parser::eatToken(const TokenType tok) {
     if (m_currToken.type != tok) {
         std::cerr << "Unexpected token " << m_currToken.toString() << " at line " << m_currToken.line << std::endl;
         exit(1);

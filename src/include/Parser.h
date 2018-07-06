@@ -8,11 +8,11 @@ class Parser {
     Lexer m_lexer;
     Token m_currToken;
 public:
-    explicit Parser(Lexer lexer);
+    explicit Parser(const Lexer lexer);
     std::unique_ptr<AST::Stmt> parse();
 private:
     // Parsers
-    Token eatToken(TokenType tok);
+    Token eatToken(const TokenType tok);
     std::unique_ptr<AST::Stmt> parseStmt();
     std::unique_ptr<AST::IfStmt> parseIfStmt();
     std::unique_ptr<AST::BlockStmt> parseBlockStmt();
