@@ -7,16 +7,12 @@ notifications:
 addons:
   apt:
     sources:
-      - llvm-toolchain-trusty-5.0
       - ubuntu-toolchain-r-test
     packages:
-      - clang-5.0
       - g++-7
       - lcov
 compiler:
-  - gcc # todo: choose compiler
-env:
-  - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+  - gcc
 
 install:
   - git submodule update --init --recursive
