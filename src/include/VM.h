@@ -2,12 +2,14 @@
 
 #include <DurianObject.h>
 
+#include <array>
+
 class VM {
+    unsigned char *m_code;     // Pointer to bytecode
     int m_pc;                  // Program Counter
     int m_sp;                  // Stack Pointer
-    unsigned char *m_code;     // Pointer to bytecode
     static const int STACK_SIZE = 256;
-    DurianObject stack[STACK_SIZE];      // Stack
+    std::array<DurianObject, STACK_SIZE> m_stack; //stack
 public:
     VM(unsigned char *);
     ~VM() = default;
