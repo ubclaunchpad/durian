@@ -20,9 +20,9 @@ script:
   - mkdir build ; cd build ; cmake -DCMAKE_BUILD_TYPE=Debug ..
   - make
   - ./durian_test
-after_success: |
-  cd ${TRAVIS_BUILD_DIR} &&
-  lcov --directory . --capture --output-file coverage.info &&
-  lcov --remove coverage.info '/Library/*' '/usr/*' '*/test/*' '*/googletest/*' --output-file coverage.info &&
-  lcov --list coverage.info &&
-  bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
+after_success:
+  - cd ${TRAVIS_BUILD_DIR}
+  - lcov --directory . --capture --output-file coverage.info
+  - lcov --remove coverage.info '/Library/*' '/usr/*' '*/test/*' '*/googletest/*' --output-file coverage.info
+  - lcov --list coverage.info
+  - bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
