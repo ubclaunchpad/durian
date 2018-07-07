@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
 project(durian LANGUAGES CXX)
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(CodeCoverage)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -29,14 +32,16 @@ add_executable(pretty_printer
 add_executable(durian_test
         ${SOURCE_FILES}
         ${TEST_FILES})
-
 target_link_libraries(durian_test gtest_main)
+
+APPEND_COVERAGE_COMPILER_FLAGS()
+setup_target_for_coverage(NAME ${PROJECT_NAME}_coverage durian_test coverage)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
     target_compile_options(VM PRIVATE -Wall -Wextra -Wunreachable-code -Wpedantic)
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(VM PRIVATE -Wweak-vtables -Wexit-time-destructors -Wglobal-constructors -Wmissing-noreturn )
+    target_compile_options(VM PRIVATE -Wexit-time-destructors -Wmissing-noreturn )
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(VM PRIVATE /W4 /w44265 /w44061 /w44062 )
@@ -46,7 +51,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
     target_compile_options(durian_test PRIVATE -Wall -Wextra -Wunreachable-code -Wpedantic)
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(durian_test PRIVATE -Wexit-time-destructors -Wmissing-noreturn )
+    target_compile_options(durian_test PRIVATE -Wexit-time-destructors -Wmissing-noreturn)
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(durian_test PRIVATE /W4 /w44265 /w44061 /w44062 )
