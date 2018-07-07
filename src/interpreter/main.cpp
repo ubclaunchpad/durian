@@ -6,7 +6,8 @@
 using namespace Opcode;
 
 int main() {
-    unsigned char bytecodes[] = {BCONST_F, DUP, BR_F, 0x02, 0x00, 0x00, 0x00, POP, BCONST_T, PRINT, HALT};
+    // Temporary bytecodes primarily used for testing
+    unsigned char bytecodes[] = {BCONST_F, ICONST_1, ADD, HALT};
     VM(bytecodes).run();
     return 0;
 }

@@ -16,4 +16,6 @@ class VM {
         void push(DurianObject);
         DurianObject pop();
         unsigned char nextBytecode();
+        void typeError(const char *operand, DurianObject a);
+        void typeError(const char *operand, DurianObject a, DurianObject b);
 };

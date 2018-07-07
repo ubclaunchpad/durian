@@ -17,21 +17,24 @@ VM::VM(unsigned char *bytecode) :
     // Do nothing.
 }
 
-VM::~VM() {
-
-}
+VM::~VM() {}
 
 
 int VM::run() {
-    //DurianObject a, b, v;
     while(true) {
         unsigned char opcode = nextBytecode();
         DURIAN_DEBUG_LOG("%x\n", opcode);
         DurianObject a, b;
-        int32_t jumpLen;
+        int32_t jumpLen; // Jump length
+        unsigned char *p_headerStr; // String (length: 8 bytes, value: length bytes) pointer
         switch (opcode) {
             case Opcode::HALT: return 0;
             case Opcode::NOP: break;
+            case Opcode::NEWSTR8:
+                p_headerStr = m_code + *reinterpret_cast<int32_t*>(m_code + m_pc); // m_code + headerOffset
+                m_pc += sizeof(int32_t);
+                push(DurianObject(*reinterpret_cast<int32_t*>(p_headerStr), p_headerStr + sizeof(int32_t)));
+                break;
             case Opcode::ICONST:
                 push(*reinterpret_cast<int64_t*>(m_code+m_pc));
                 m_pc += sizeof(int64_t);
@@ -72,11 +75,7 @@ int VM::run() {
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
                     push(a.value.dval + b.value.dval);
                 } else {
-                    std::cout << "TypeError: Invalid operand types for +: "
-                              << a.type
-                              << " and "
-                              << b.type
-                              << "." << std::endl;
+                    typeError("+", a, b);
                     exit(EXIT_FAILURE);
                 }
                 break;
@@ -92,11 +91,7 @@ int VM::run() {
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
                     push(a.value.dval - b.value.dval);
                 } else {
-                    std::cout << "TypeError: Invalid operand types for -: "
-                            << a.type
-                            << " and "
-                            << b.type
-                            << "." << std::endl;
+                    typeError("-", a, b);
                     exit(EXIT_FAILURE);
                 }
             case Opcode::MUL:
@@ -111,11 +106,7 @@ int VM::run() {
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
                     push(a.value.dval * b.value.dval);
                 } else {
-                    std::cout << "TypeError: Invalid operand types for *: "
-                            << a.type
-                            << " and "
-                            << b.type
-                            << "." << std::endl;
+                    typeError("*", a, b);
                     exit(EXIT_FAILURE);
                 }
             case Opcode::FDIV:
@@ -134,11 +125,7 @@ int VM::run() {
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
                     push(a.value.dval / b.value.dval);
                 } else {
-                    std::cout << "TypeError: Invalid operand types for /: "
-                            << a.type
-                            << " and "
-                            << b.type
-                            << "." << std::endl;
+                    typeError("/", a, b);
                     exit(EXIT_FAILURE);
                 }
             case Opcode::NEG:
@@ -148,9 +135,7 @@ int VM::run() {
                 } else if (a.type == DurianType::Double) {
                     push(-a.value.dval);
                 } else {
-                    std::cout << "TypeError: Invalid operand type for -: "
-                              << a.type
-                              << "." << std::endl;
+                    typeError("-", a);
                     exit(EXIT_FAILURE);
                 }
                 break;
@@ -159,12 +144,19 @@ int VM::run() {
                 if (a.type == DurianType::Boolean) {
                     push(!a.value.bval);
                 } else {
-                    std::cout << "TypeError: Invalid operand type for !: "
-                              << a.type
-                              << "." << std::endl;
+                    typeError("!", a);
                     exit(EXIT_FAILURE);
                 }
                 break;
+            case Opcode::CNCT:
+                b = pop();
+                a = pop();
+                if (a.type == DurianType::String && b.type == DurianType::String) {
+                    push(DurianObject(a.value.sval.m_len /* + b.value.sval.m_len */, a.value.sval.p_val /* TODO: Implement concat string */));
+                } else {
+                    typeError("&", a, b);
+                    exit(EXIT_FAILURE);
+                }
             case Opcode::BR_F:
                 a = pop();
                 jumpLen = *reinterpret_cast<int32_t*>(m_code+m_pc);
@@ -180,14 +172,18 @@ int VM::run() {
                 else if (a.type == DurianType::Double)
                     printf("%f\n", a.value.dval);
                 else if (a.type == DurianType::Boolean)
-                    std::cout << (a.value.bval ? "true" : "false") << std::endl;
-                else
-                    std::cout << "Unknown Type";
+                    std::cout << (a.value.bval ? "True" : "False") << std::endl;
+                else if (a.type == DurianType::String)
+                    printf("%.*s\n", a.value.sval.m_len, a.value.sval.p_val);
+                else {
+                    typeError("print", a);
+                    exit(EXIT_FAILURE);
+                }
                 break;
             // More cases here
             default:
                 // TODO: Handle when opcode is invalid. Perhaps raise error
-                return 1;
+                exit(EXIT_FAILURE);
         }
     }
 }
@@ -204,4 +200,18 @@ DurianObject VM::pop() {
 
 unsigned char VM::nextBytecode() {
     return m_code[m_pc++];
+}
+
+void VM::typeError(const char *operand, DurianObject a) {
+    std::cout << "TypeError: Invalid operand type for " << operand << ": "
+              << a.type
+              << "." << std::endl;
+}
+
+void VM::typeError(const char *operand, DurianObject a, DurianObject b) {
+    std::cout << "TypeError: Invalid operand type for " << operand << ": "
+              << a.type
+              << " and "
+              << b.type
+              << "." << std::endl;
 }
