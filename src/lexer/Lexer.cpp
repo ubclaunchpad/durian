@@ -131,7 +131,9 @@ const Token Lexer::getToken() {
                 if (literal == "err") return Token {TokenType::Err, m_line, ""};
                 return Token {TokenType::Identifier, m_line, literal};
             }
-            return Token {TokenType::Error, m_line, std::string(&c)};
+            std::string errChar;
+            errChar.push_back(c);
+            return Token {TokenType::Error, m_line, errChar};
     }
 }
 
