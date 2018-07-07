@@ -22,6 +22,12 @@ DurianObject::DurianObject(bool bval) :
     value.bval = bval;
 }
 
+DurianObject::DurianObject(int32_t len, unsigned char *sval) :
+    type(DurianType::String) {
+    value.sval.p_val = sval;
+    value.sval.m_len = len;
+}
+
 std::ostream &operator<<(std::ostream &os, DurianType &type) {
     // Make sure all cases are covered when adding new types.
     switch (type) {
@@ -33,6 +39,9 @@ std::ostream &operator<<(std::ostream &os, DurianType &type) {
             break;
         case DurianType::Boolean:
             os << "bool";
+            break;
+        case DurianType::String:
+            os << "str";
             break;
     }
     return os;
