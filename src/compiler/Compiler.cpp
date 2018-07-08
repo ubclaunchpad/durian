@@ -5,8 +5,8 @@ Compiler::Compiler(Parser parser) : m_parser(parser) {}
 void Compiler::visit(AST::AssignStmt *node);
 
 void Compiler::visit(AST::BinaryExpr *node) {
-    visit(node->m_right);
-    visit(node->m_left);
+    node->m_right->accept(this);
+    node->m_left->accept(this);
     m_buffer.push_back(node->m_op.getBinOpcode());
 }
 
@@ -21,7 +21,7 @@ void Compiler::visit(AST::BreakStmt *node);
 void Compiler::visit(AST::ErrStmt *node);
 
 void Compiler::visit(AST::ExprStmt *node) {
-    visit(node->m_expr);
+    node->m_expr->accept(this);
 }
 
 void Compiler::visit(AST::FloatLit *node) {
@@ -57,7 +57,7 @@ void Compiler::visit(AST::ScanStmt *node);
 void Compiler::visit(AST::StringLit *node);
 
 void Compiler::visit(AST::UnaryExpr *node) {
-    visit(node->m_operand);
+    node->m_operand->accept(this);
     m_buffer.push_back(node->m_op.getUnOpcode());
 }
 
