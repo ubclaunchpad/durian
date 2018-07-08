@@ -17,6 +17,7 @@ namespace Opcode {
         MUL      = 0x62, // multiply top two elements on stack, push result back onto stack.
         FDIV     = 0x64, // divide top two elements on stack, push result back onto stack as a double.
         NEG      = 0x67, // negate top element on stack, push result back onto stack.
+        POS      = 0x68, // identity for numbers, coerces strings to numbers.
         NOT      = 0x69, // negates a boolean on top of the stack.
         CNCT     = 0x6B, // concatenate top two elements on stack, push result back onto stack.
         EQ       = 0x74, // checks if the top two elements of the stack are equal.
