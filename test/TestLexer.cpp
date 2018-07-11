@@ -86,3 +86,22 @@ TEST(TestLexer, TestEatDurianEx) {
     checkToken(lexer.getToken(), TokenType::RightBrace, 5, "");
 }
 
+TEST(TestLexer, TestCarriageReturnOnly) {
+    Lexer lexer("\r");
+    checkToken(lexer.getToken(), TokenType::Error, 1, "Found carriage return but no newline.");
+}
+
+TEST(TestLexer, TestIntegerLiteral) {
+    Lexer lexer("10");
+    checkToken(lexer.getToken(), TokenType::Integer, 1, "10");
+}
+
+TEST(TestLexer, TestFloatLiteral) {
+    Lexer lexer("10.0");
+    checkToken(lexer.getToken(), TokenType::Float, 1, "10.0");
+}
+
+TEST(TestLexer, TestInvalidCharacter) {
+    Lexer lexer("_");
+    checkToken(lexer.getToken(), TokenType::Error, 1, "_");
+}

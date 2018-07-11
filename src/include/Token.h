@@ -92,7 +92,7 @@ struct Token {
             return literal;
         } else return tokTypeToString(type);
     }
-    unsigned char getBinOpcode() {
+    constexpr unsigned char getBinOpcode() const {
         switch (type) {
             case TokenType::Ampersand:
                 return Opcode::CNCT;
@@ -106,6 +106,8 @@ struct Token {
                 return Opcode::FDIV;
             case TokenType::EqualEqual:
                 return Opcode::EQ;
+            default:
+                return '\0';
             // TODO: other cases
         }
     }

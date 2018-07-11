@@ -11,14 +11,12 @@
 // Public
 
 VM::VM(unsigned char *bytecode) :
+    m_code(bytecode),
     m_pc(0),
-    m_sp(-1),
-    m_code(bytecode) {
+    m_sp(0),
+    m_stack {} {
     // Do nothing.
 }
-
-VM::~VM() {}
-
 
 int VM::run() {
     while(true) {
@@ -191,11 +189,11 @@ int VM::run() {
 // Private
 
 void VM::push(DurianObject v) {
-    stack[++m_sp] = v;
+    m_stack[++m_sp] = v;
 }
 
 DurianObject VM::pop() {
-    return stack[m_sp--];
+    return m_stack[m_sp--];
 }
 
 unsigned char VM::nextBytecode() {
