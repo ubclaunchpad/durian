@@ -65,38 +65,56 @@ private:
 };
 
 int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
-    std::string input;
     if (optionalFilepath.first) {
+        std::string input;
         std::ifstream file(optionalFilepath.second);
         file >> input;
-    } else {
-        // TODO make this more interactive
-        // run "REPL"
-        std::cout << "Input some code! Type `fin` when you're done." << std::endl;
-        bool fin = false;
-        while (!fin) {
-            std::string temp;
-            std::getline(std::cin, temp);
-            if (temp == "fin") {
-                fin = true;
+        Parser parser {Lexer(input)};
+        PrettyPrinter pp;
+        bool done = false;
+        while (!done) {
+            auto ast = parser.parse();
+            if (ast == nullptr) {
+                done = true;
             } else {
-                input += temp;
-                input += "\n";
+                ast->accept(&pp);
             }
         }
-    }
-    Parser parser {Lexer(input)};
-    PrettyPrinter pp;
-    bool done = false;
-    while (!done) {
-        auto ast = parser.parse();
-        if (ast == nullptr) {
-            done = true;
-        } else {
-            ast->accept(&pp);
+        return 0;
+    } else {
+        // run pretty-printing REPL
+        PrettyPrinter pp;
+        std::cout << "Input some code! Type `fin` when you're done." << std::endl;
+        while (true) {
+            std::string input;
+            std::getline(std::cin, input);
+            if (input == "fin") {
+                break;
+            } else if (input.back() == '{') {
+                // TODO make a less hacky way for this
+                bool multilineDone = false;
+                while (!multilineDone) {
+                    std::string temp;
+                    std::getline(std::cin, temp);
+                    if (temp == "}") {
+                        multilineDone = true;
+                    }
+                    input += temp;
+                    input += '\n';
+                }
+            }
+            Parser parser {Lexer(input)};
+            while (true) {
+                auto ast = parser.parse();
+                if (ast == nullptr) {
+                    break;
+                } else {
+                    ast->accept(&pp);
+                }
+            }
         }
+        return 0;
     }
-    return 0;
 }
 
 int compile(std::pair<bool, std::string> optionalFilepath) {
