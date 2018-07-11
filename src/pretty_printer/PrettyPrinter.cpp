@@ -83,7 +83,7 @@ void PrettyPrinter::visit(AST::FnDecl *node) {
     }
     std::cout << " and body ";
     node->m_body->accept(this);
-    std::cout << ";" << std::endl;
+    // no need to end, block statement will
 };
 
 void PrettyPrinter::visit(AST::Identifier *node) {

@@ -286,6 +286,7 @@ std::unique_ptr<AST::Expr> Parser::parseUnaryExpr() {
                 }
                 args.push_back(std::move(arg));
             }
+            eatToken(TokenType::RightParen);
             return std::make_unique<AST::FnCall>(std::move(id), std::move(args));
         }
         return static_cast<std::unique_ptr<AST::Expr>>(std::move(id));
