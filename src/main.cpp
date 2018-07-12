@@ -2,6 +2,7 @@
 #include <Parser.h>
 #include <PrettyPrinter.h>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <vector>
