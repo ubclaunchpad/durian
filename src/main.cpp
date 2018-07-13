@@ -67,9 +67,9 @@ private:
 
 int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
     if (optionalFilepath.first) {
-        std::string input;
         std::ifstream file(optionalFilepath.second);
-        file >> input;
+        std::string input((std::istreambuf_iterator<char>(file)),
+                                std::istreambuf_iterator<char>());
         Parser parser {Lexer(input)};
         PrettyPrinter pp;
         bool done = false;
