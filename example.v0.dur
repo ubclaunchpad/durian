@@ -1,0 +1,5 @@
+print "hello tom"
+
+def max(a, b) {
+  return a
+}
