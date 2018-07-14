@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 project(durian LANGUAGES CXX)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-include(CodeCoverage)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -31,8 +30,11 @@ add_executable(durian_test
         ${TEST_FILES})
 target_link_libraries(durian_test gtest_main)
 
-APPEND_COVERAGE_COMPILER_FLAGS()
-setup_target_for_coverage(NAME ${PROJECT_NAME}_coverage durian_test coverage)
+if (DEFINED ENV{DURIAN_COVERAGE})
+    include(CodeCoverage)
+    APPEND_COVERAGE_COMPILER_FLAGS()
+    setup_target_for_coverage(NAME ${PROJECT_NAME}_coverage durian_test coverage)
+endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
     target_compile_options(durian PRIVATE -Wall -Wextra -Wunreachable-code -Wpedantic)

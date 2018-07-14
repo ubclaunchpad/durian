@@ -18,6 +18,8 @@ env:
 
 before_install:
   - eval "${MATRIX_EVAL}"
+  - export DURIAN_COVERAGE=true
+  - echo "${DURIAN_COVERAGE}"
 install:
   - git submodule update --init --recursive
 script:

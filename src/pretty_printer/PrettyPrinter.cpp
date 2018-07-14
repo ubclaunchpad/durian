@@ -7,9 +7,9 @@
 
 void PrettyPrinter::PrettyPrinter::visit(AST::AssignStmt *node) {
     std::cout << "assign ";
-    node->m_ident->accept(this);
-    std::cout << " to ";
     node->m_expr->accept(this);
+    std::cout << " to ";
+    node->m_ident->accept(this);
     std::cout << ";" << std::endl;
 }
 
