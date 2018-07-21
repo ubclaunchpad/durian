@@ -18,7 +18,10 @@ void Compiler::visit(AST::BooleanLit *node) {
 
 void Compiler::visit(AST::BreakStmt *node);
 
-void Compiler::visit(AST::ErrStmt *node);
+void Compiler::visit(AST::ErrStmt *node) {
+    node->m_expr->accept(this);
+    m_buffer.push_back(Opcode::ERR);
+}
 
 void Compiler::visit(AST::ExprStmt *node) {
     node->m_expr->accept(this);
@@ -49,7 +52,10 @@ void Compiler::visit(AST::LetStmt *node);
 
 void Compiler::visit(AST::NextStmt *node);
 
-void Compiler::visit(AST::PrintStmt *node);
+void Compiler::visit(AST::PrintStmt *node) {
+    node->m_expr->accept(this);
+    m_buffer.push_back(Opcode::PRINT);
+}
 
 void Compiler::visit(AST::ReturnStmt *node);
 
