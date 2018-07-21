@@ -1,3 +1,4 @@
+#include <Compiler.h>
 #include <Lexer.h>
 #include <Parser.h>
 #include <PrettyPrinter.h>
@@ -66,6 +67,7 @@ private:
 };
 
 int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
+    std::cout << "Pretty printing..." << std::endl;
     if (optionalFilepath.first) {
         std::ifstream file(optionalFilepath.second);
         std::string input((std::istreambuf_iterator<char>(file)),
@@ -119,16 +121,45 @@ int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
 }
 
 int compile(std::pair<bool, std::string> optionalFilepath) {
-    // TODO
+    std::cout << "Compiling only..." << std::endl;
+    if (optionalFilepath.first) {
+        std::cout << "Found filepath " << optionalFilepath.second << std::endl;
+        std::ifstream file(optionalFilepath.second);
+        std::string input((std::istreambuf_iterator<char>(file)),
+                          std::istreambuf_iterator<char>());
+        Parser parser {Lexer(input)};
+        std::vector<unsigned char> outBytecode;
+        bool done = false;
+        while (!done) {
+            auto ast = parser.parse();
+            if (ast == nullptr) {
+                done = true;
+            } else {
+                Compiler compiler;
+                ast->accept(&compiler);
+                for (unsigned char bytecode : compiler.getBuffer()) {
+                    outBytecode.push_back(bytecode);
+                }
+            }
+        }
+        for (unsigned char bytecode : outBytecode) {
+            printf("%.2X ", bytecode);
+        }
+        return 0;
+    } else {
+        // TODO REPL
+    }
     return 0;
 }
 
 int interpretBytecode(std::pair<bool, std::string> optionalFilepath) {
+    std::cout << "Running bytecode..." << std::endl;
     // TODO
     return 0;
 }
 
 int execute(std::pair<bool, std::string> optionalFilepath) {
+    std::cout << "Executing..." << std::endl;
     // TODO
     return 0;
 }

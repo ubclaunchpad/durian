@@ -80,6 +80,45 @@ inline std::string tokTypeToString(const TokenType type) {
     }
 }
 
+inline constexpr unsigned char getBinOpcode(TokenType type) {
+    switch (type) {
+        case TokenType::Ampersand:
+            return Opcode::CNCT;
+        case TokenType::Plus:
+            return Opcode::ADD;
+        case TokenType::Minus:
+            return Opcode::SUB;
+        case TokenType::Star:
+            return Opcode::MUL;
+        case TokenType::Slash:
+            return Opcode::FDIV;
+        case TokenType::EqualEqual:
+            return Opcode::EQ;
+            // TODO other cases
+        default:
+            // this should never happen
+            std::cout << "Token " << tokTypeToString(type) << " has no binary opcode translation." << std::endl;
+            exit(1);
+    }
+}
+
+inline constexpr unsigned char getUnOpcode(TokenType type) {
+    switch (type) {
+        case TokenType::Plus:
+            return Opcode::POS;
+        case TokenType::Minus:
+            return Opcode::NEG;
+        case TokenType::Bang:
+            return Opcode::NOT;
+        case TokenType::Ampersand:
+            return Opcode::STRFY;
+        default:
+            // this should never happen
+            std::cout << "Token " << tokTypeToString(type) << " has no unary opcode translation." << std::endl;
+            exit(1);
+    }
+}
+
 struct Token {
     TokenType type;
     uint32_t line;
@@ -92,43 +131,6 @@ struct Token {
             type == TokenType::Error) {
             return literal;
         } else return tokTypeToString(type);
-    }
-    constexpr unsigned char getBinOpcode() const {
-        switch (type) {
-            case TokenType::Ampersand:
-                return Opcode::CNCT;
-            case TokenType::Plus:
-                return Opcode::ADD;
-            case TokenType::Minus:
-                return Opcode::SUB;
-            case TokenType::Star:
-                return Opcode::MUL;
-            case TokenType::Slash:
-                return Opcode::FDIV;
-            case TokenType::EqualEqual:
-                return Opcode::EQ;
-                // TODO other cases
-            default:
-                // this should never happen
-                std::cout << "Token " << tokTypeToString(type) << " has no binary opcode translation." << std::endl;
-                exit(1);
-        }
-    }
-    unsigned char getUnOpcode() {
-        switch (type) {
-            case TokenType::Plus:
-                return Opcode::POS;
-            case TokenType::Minus:
-                return Opcode::NEG;
-            case TokenType::Bang:
-                return Opcode::NOT;
-            case TokenType::Ampersand:
-                return Opcode::STRFY;
-            default:
-                // this should never happen
-                std::cout << "Token " << tokTypeToString(type) << " has no unary opcode translation." << std::endl;
-                exit(1);
-        }
     }
 };
 

@@ -12,6 +12,7 @@ include_directories(src/include)
 add_subdirectory(googletest/)
 
 set(SOURCE_FILES
+        src/compiler/Compiler.cpp
         src/lexer/Lexer.cpp
         src/parser/Parser.cpp
         src/pretty_printer/PrettyPrinter.cpp
