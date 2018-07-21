@@ -1,5 +1,4 @@
-print "hello tom"
-
-def max(a, b) {
-  return a
-}
+print 1
+print true
+print false
+print 123412341234
