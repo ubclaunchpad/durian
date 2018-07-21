@@ -1,4 +1,5 @@
 #include <Compiler.h>
+#include <array>
 
 void Compiler::visit(AST::AssignStmt *node) {}
 
@@ -27,10 +28,12 @@ void Compiler::visit(AST::ExprStmt *node) {
 }
 
 void Compiler::visit(AST::FloatLit *node) {
-    char tmp[sizeof(double)];
-    memcpy(tmp, &node->m_value, sizeof(double));
+    std::array<unsigned char, sizeof(double)> tmp = {};
+    memcpy(tmp.data(), &node->m_value, sizeof(double));
     m_buffer.push_back(Opcode::DCONST);
-    for (int i = 0; i < sizeof(double); i++) m_buffer.push_back(tmp[i]);
+    for (unsigned char val : tmp) {
+        m_buffer.push_back(val);
+    }
 }
 
 void Compiler::visit(AST::FnCall *node) {}
@@ -42,10 +45,12 @@ void Compiler::visit(AST::Identifier *node) {}
 void Compiler::visit(AST::IfStmt *node) {}
 
 void Compiler::visit(AST::IntegerLit *node) {
-    char tmp[sizeof(int64_t)];
-    memcpy(tmp, &node->m_value, sizeof(int64_t));
+    std::array<unsigned char, sizeof(double)> tmp = {};
+    memcpy(tmp.data(), &node->m_value, sizeof(int64_t));
     m_buffer.push_back(Opcode::ICONST);
-    for (int i = 0; i < sizeof(int64_t); i++) m_buffer.push_back(tmp[i]);
+    for (unsigned char val : tmp) {
+        m_buffer.push_back(val);
+    }
 }
 
 void Compiler::visit(AST::LetStmt *node) {}
