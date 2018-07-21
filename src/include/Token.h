@@ -119,6 +119,9 @@ struct Token {
                 return Opcode::NEG;
             case TokenType::Bang:
                 return Opcode::NEG;
+            default:
+                return '\0';
+                // TODO other cases
         }
     }
 };
