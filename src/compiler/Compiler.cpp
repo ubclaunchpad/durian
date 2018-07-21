@@ -1,5 +1,7 @@
-#include <Compiler.h>
 #include <array>
+#include <cstring>
+
+#include <Compiler.h>
 
 void Compiler::visit(AST::AssignStmt *node) {}
 
