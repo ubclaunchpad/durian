@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <iostream>
 #include <opcode.h>
 
 enum struct TokenType {
@@ -106,9 +107,11 @@ struct Token {
                 return Opcode::FDIV;
             case TokenType::EqualEqual:
                 return Opcode::EQ;
+                // TODO other cases
             default:
-                return '\0';
-            // TODO: other cases
+                // this should never happen
+                std::cout << "Token " << tokTypeToString(type) << " has no binary opcode translation." << std::endl;
+                exit(1);
         }
     }
     unsigned char getUnOpcode() {
@@ -118,10 +121,13 @@ struct Token {
             case TokenType::Minus:
                 return Opcode::NEG;
             case TokenType::Bang:
-                return Opcode::NEG;
+                return Opcode::NOT;
+            case TokenType::Ampersand:
+                return Opcode::STRFY;
             default:
-                return '\0';
-                // TODO other cases
+                // this should never happen
+                std::cout << "Token " << tokTypeToString(type) << " has no unary opcode translation." << std::endl;
+                exit(1);
         }
     }
 };

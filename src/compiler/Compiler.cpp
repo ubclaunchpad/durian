@@ -1,12 +1,12 @@
 #include <Compiler.h>
 
-Compiler::Compiler(Parser parser) : m_parser(parser) {}
+Compiler::Compiler() {}
 
 void Compiler::visit(AST::AssignStmt *node);
 
 void Compiler::visit(AST::BinaryExpr *node) {
-    node->m_right->accept(this);
     node->m_left->accept(this);
+    node->m_right->accept(this);
     m_buffer.push_back(node->m_op.getBinOpcode());
 }
 
@@ -22,6 +22,7 @@ void Compiler::visit(AST::ErrStmt *node);
 
 void Compiler::visit(AST::ExprStmt *node) {
     node->m_expr->accept(this);
+    m_buffer.push_back(Opcode::POP);
 }
 
 void Compiler::visit(AST::FloatLit *node) {
