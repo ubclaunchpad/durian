@@ -33,6 +33,8 @@ namespace Opcode {
         PRINT    = 0xF0, // print top of stack to stdout with newline, discarding top of stack.
         ERR      = 0xF1, // print top of stack to stderr with newline, discarding top of stack.
         SCAN     = 0xF2, // read line from stdin and push
+        RET      = 0xF8, // return from function.
+        CALL     = 0xF9, // function call
         HALT     = 0xFF, // halt.
     };
 }

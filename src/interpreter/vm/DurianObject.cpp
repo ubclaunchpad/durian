@@ -12,8 +12,8 @@ DurianObject::DurianObject(double dval) :
     value.dval = dval;
 }
 
-DurianObject::DurianObject(int64_t ival) :
-    type(DurianType::Integer) {
+DurianObject::DurianObject(int64_t ival, DurianType type = DurianType::Integer) :
+    type(type) {
     value.ival = ival;
 }
 
@@ -42,6 +42,9 @@ std::ostream &operator<<(std::ostream &os, DurianType &type) {
             break;
         case DurianType::String:
             os << "str";
+            break;
+        case DurianType::Function:
+            os << "fn";
             break;
     }
     return os;

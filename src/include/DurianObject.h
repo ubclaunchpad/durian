@@ -8,13 +8,14 @@ enum struct DurianType {
     Double,
     Integer,
     Boolean,
-    String
+    String,
+    Function
 };
 
 struct DurianObject {
     DurianObject();
     DurianObject(double dval);
-    DurianObject(int64_t ival);
+    DurianObject(int64_t ival, DurianType type);
     DurianObject(bool bval);
     DurianObject(int32_t len, unsigned char *sval);
     bool isFalsy() { return type == DurianType::Boolean && !value.bval; };
