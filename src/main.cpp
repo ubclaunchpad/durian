@@ -26,12 +26,12 @@ public:
         for (int i = 0; i < argc; i++) {
             args.emplace_back(argv[i]);
         }
+
+        this->verbose = optionExists("-v");
         if (optionExists("-h") || optionExists("--help")) {
             printHelpAndExit(0);
         }
-        if (optionExists("-v")) {
-            this->verbose = true;
-        }
+
         setModeIfExistsFlag("-p", Mode::PrettyPrint);
         setModeIfExistsFlag("-c", Mode::CompileOnly);
         setModeIfExistsFlag("-b", Mode::InterpretOnly);
@@ -155,7 +155,7 @@ int compile(std::pair<bool, std::string> optionalFilepath, bool verbose) {
                   outBytecode.cend(),
                   std::ostreambuf_iterator<char>(outFile));
         
-        if (verbose == true) {
+        if (verbose) {
             for (unsigned char bytecode : outBytecode) {
                 printf("%.2X ", bytecode);
             }
@@ -168,13 +168,13 @@ int compile(std::pair<bool, std::string> optionalFilepath, bool verbose) {
     return 0;
 }
 
-int interpretBytecode(std::pair<bool, std::string> optionalFilepath) {
+int interpretBytecode(std::pair<bool, std::string> optionalFilepath, bool verbose) {
     std::cout << "Running bytecode..." << std::endl;
     // TODO
     return 0;
 }
 
-int execute(std::pair<bool, std::string> optionalFilepath) {
+int execute(std::pair<bool, std::string> optionalFilepath, bool verbose) {
     std::cout << "Executing..." << std::endl;
     // TODO
     return 0;
@@ -188,9 +188,9 @@ int main(int argc, char *argv[]) {
         case ArgParser::Mode::CompileOnly:
             return compile(argParser.optionalFilepath, argParser.verbose);
         case ArgParser::Mode::InterpretOnly:
-            return interpretBytecode(argParser.optionalFilepath);
+            return interpretBytecode(argParser.optionalFilepath, argParser.verbose);
         default:
-            return execute(argParser.optionalFilepath);
+            return execute(argParser.optionalFilepath, argParser.verbose);
     }
 }
 
