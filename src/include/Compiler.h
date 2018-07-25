@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include <Parser.h>
 #include <ASTree.h>
 #include <Visitor.h>
@@ -7,6 +9,8 @@
 class Compiler : public Visitor {
     std::vector<unsigned char> m_buffer;
     std::vector<unsigned char> m_header;
+    std::unordered_map<std::string, uint64_t> m_staticStringMap;
+    uint64_t m_currStaticStringIndex;
 public:
     std::vector<unsigned char> getBuffer() { return m_buffer; }
     virtual void visit(AST::AssignStmt *node) override;

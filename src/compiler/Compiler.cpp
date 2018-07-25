@@ -68,7 +68,26 @@ void Compiler::visit(AST::ReturnStmt *node) {}
 
 void Compiler::visit(AST::ScanStmt *node) {}
 
-void Compiler::visit(AST::StringLit *node) {}
+void Compiler::visit(AST::StringLit *node) {
+    const std::string lit = node->m_value;
+
+    std::array<uint8_t, sizeof(uint64_t)> tmp = {};
+    uint64_t idx;
+    if (m_staticStringMap.find(lit) == m_staticStringMap.end()) {
+        // string not present in static data, add
+        idx = m_currStaticStringIndex;
+        m_staticStringMap.insert({lit, m_currStaticStringIndex});
+        m_currStaticStringIndex += lit.size();
+    } else {
+        idx = m_staticStringMap.at(lit);
+        std::array<uint8_t, sizeof(uint64_t)> tmp = {};
+    }
+    std::memcpy(tmp.data(), &idx, sizeof(uint64_t));
+    for (auto val : tmp) {
+        m_buffer.push_back(val);
+    }
+    m_buffer.push_back(Opcode::NEWSTR8);
+}
 
 void Compiler::visit(AST::UnaryExpr *node) {
     node->m_operand->accept(this);
