@@ -12,7 +12,7 @@ void Env::declVar(std::string varName) {
 
 int64_t Env::lookUpVar(std::string varName) {
     auto v = m_values.find(varName);
-    if (v != m_values.end()) return *v;
+    if (v != m_values.end()) return v->second;
     
     if (m_parent == nullptr) exit(1);
     
