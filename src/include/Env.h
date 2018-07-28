@@ -11,4 +11,5 @@ public:
     void declVar(std::string);
 private:    
     std::unordered_map<std::string, int64_t> m_values;
+    int64_t getNumVars();
 }
