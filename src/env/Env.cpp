@@ -14,7 +14,7 @@ int64_t Env::lookUpVar(std::string varName) {
     auto v = m_values.find(varName);
     if (v != m_values.end()) return *v;
     
-    if (m_parent == NULL) exit(1);
+    if (m_parent == nullptr) exit(1);
     
     return m_parent->lookUpVar(varName);
 }
