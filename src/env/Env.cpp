@@ -7,7 +7,7 @@ int64_t Env::getNumVars() {
 
 void Env::declVar(std::string varName) {
     int64_t size = getNumVars();
-    m_values.emplace({varName, size});
+    m_values.emplace(varName, size);
 }
 
 int64_t Env::lookUpVar(std::string varName) {
