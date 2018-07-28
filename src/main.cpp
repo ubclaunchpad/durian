@@ -12,6 +12,7 @@
 class ArgParser {
     std::vector<std::string> args;
 public:
+    bool verbose;
     enum struct Mode {
         PrettyPrint,
         CompileOnly,
@@ -21,19 +22,23 @@ public:
     std::pair<bool, std::string> optionalFilepath;
 
     ArgParser(int argc, char **argv)
-            : mode(Mode::None), optionalFilepath() {
+            : verbose(false), mode(Mode::None), optionalFilepath() {
         for (int i = 0; i < argc; i++) {
             args.emplace_back(argv[i]);
         }
+
+        this->verbose = optionExists("-v");
         if (optionExists("-h") || optionExists("--help")) {
             printHelpAndExit(0);
         }
+
         setModeIfExistsFlag("-p", Mode::PrettyPrint);
         setModeIfExistsFlag("-c", Mode::CompileOnly);
         setModeIfExistsFlag("-b", Mode::InterpretOnly);
         if (args.back() != "-p" &&
             args.back() != "-c" &&
             args.back() != "-b" &&
+            args.back() != "-v" &&
             args.back() != args.front()) {
             optionalFilepath.first = true;
             optionalFilepath.second = args.back();
@@ -123,7 +128,7 @@ int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
     }
 }
 
-int compile(std::pair<bool, std::string> optionalFilepath) {
+int compile(std::pair<bool, std::string> optionalFilepath, bool verbose) {
     std::cout << "Compiling only..." << std::endl;
     if (optionalFilepath.first) {
         std::cout << "Found filepath " << optionalFilepath.second << std::endl;
@@ -148,9 +153,13 @@ int compile(std::pair<bool, std::string> optionalFilepath) {
         std::ofstream outFile("tmp.durb", std::ios::binary);
         std::copy(outBytecode.cbegin(),
                   outBytecode.cend(),
-                  std::ostreambuf_iterator(outFile));
-        for (unsigned char bytecode : outBytecode) {
-            printf("%.2X ", bytecode);
+                  std::ostreambuf_iterator<char>(outFile));
+        
+        if (verbose) {
+            for (unsigned char bytecode : outBytecode) {
+                printf("%.2X ", bytecode);
+            }
+            std::cout << std::endl;
         }
         return 0;
     } else {
@@ -159,13 +168,13 @@ int compile(std::pair<bool, std::string> optionalFilepath) {
     return 0;
 }
 
-int interpretBytecode(std::pair<bool, std::string> optionalFilepath) {
+int interpretBytecode(std::pair<bool, std::string> optionalFilepath, bool verbose) {
     std::cout << "Running bytecode..." << std::endl;
     // TODO
     return 0;
 }
 
-int execute(std::pair<bool, std::string> optionalFilepath) {
+int execute(std::pair<bool, std::string> optionalFilepath, bool verbose) {
     std::cout << "Executing..." << std::endl;
     // TODO
     return 0;
@@ -177,11 +186,11 @@ int main(int argc, char *argv[]) {
         case ArgParser::Mode::PrettyPrint:
             return prettyPrint(argParser.optionalFilepath);
         case ArgParser::Mode::CompileOnly:
-            return compile(argParser.optionalFilepath);
+            return compile(argParser.optionalFilepath, argParser.verbose);
         case ArgParser::Mode::InterpretOnly:
-            return interpretBytecode(argParser.optionalFilepath);
+            return interpretBytecode(argParser.optionalFilepath, argParser.verbose);
         default:
-            return execute(argParser.optionalFilepath);
+            return execute(argParser.optionalFilepath, argParser.verbose);
     }
 }
 
