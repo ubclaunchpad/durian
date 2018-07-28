@@ -14,6 +14,7 @@ VM::VM(unsigned char *bytecode) :
     m_code(bytecode),
     m_pc(0),
     m_sp(0),
+    m_fp(0),
     m_stack {} {
     // Do nothing.
 }
@@ -25,6 +26,7 @@ int VM::run() {
         DurianObject a, b;
         int32_t jumpLen; // Jump length
         unsigned char *p_headerStr; // String (length: 8 bytes, value: length bytes) pointer
+        int64_t fnAddress; // Function Address
         switch (opcode) {
             case Opcode::HALT: return 0;
             case Opcode::NOP: break;
@@ -52,6 +54,11 @@ int VM::run() {
                 break;
             case Opcode::BCONST_T:
                 push(true);
+                break;
+            case Opcode::FCONST:
+                fnAddress = *reinterpret_cast<int64_t*>(m_code+m_pc);
+                m_pc += sizeof(int64_t);
+                push(DurianObject(fnAddress, DurianType::Function));
                 break;
             case Opcode::DUP:
                 a = pop();
@@ -181,8 +188,20 @@ int VM::run() {
                 }
                 break;
             case Opcode::CALL:
+                push(DurianObject(m_fp, DurianType::Integer));
+                push(DurianObject(m_pc, DurianType::Integer));
+                m_fp = m_sp;
                 break;
             case Opcode::RET:
+                a = pop(); // return value
+                m_sp = m_fp;
+                // TODO: Discuss about int32 vs int64. The next two line loses data.
+                m_pc = pop().value.ival;
+                m_fp = pop().value.ival;
+                // TODO: Figure out popping function object and the related function parameters. What's the structure?
+                // b = pop(); // Function DurianObject
+                // pop parameters
+                push(a);
                 break;
             // More cases here
             default:
