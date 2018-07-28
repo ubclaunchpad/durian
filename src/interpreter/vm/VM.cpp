@@ -26,7 +26,7 @@ int VM::run() {
         DurianObject a, b;
         int32_t jumpLen; // Jump length
         unsigned char *p_headerStr; // String (length: 8 bytes, value: length bytes) pointer
-        int64_t fnAddress; // Function Address
+        unsigned char *p_fnAddress; // Function Address
         switch (opcode) {
             case Opcode::HALT: return 0;
             case Opcode::NOP: break;
@@ -36,14 +36,14 @@ int VM::run() {
                 push(DurianObject(*reinterpret_cast<int32_t*>(p_headerStr), p_headerStr + sizeof(int32_t)));
                 break;
             case Opcode::ICONST:
-                push(DurianObject(*reinterpret_cast<int64_t*>(m_code+m_pc), DurianType::Integer));
+                push(*reinterpret_cast<int64_t*>(m_code+m_pc));
                 m_pc += sizeof(int64_t);
                 break;
             case Opcode::ICONST_0:
-                push(DurianObject((int64_t)0, DurianType::Integer));
+                push((int64_t)0);
                 break;
             case Opcode::ICONST_1:
-                push(DurianObject((int64_t)1, DurianType::Integer));
+                push((int64_t)1);
                 break;
             case Opcode::DCONST:
                 push(*reinterpret_cast<double*>(m_code+m_pc));
@@ -56,9 +56,9 @@ int VM::run() {
                 push(true);
                 break;
             case Opcode::FCONST:
-                fnAddress = *reinterpret_cast<int64_t*>(m_code+m_pc);
+                p_fnAddress = m_code + *reinterpret_cast<int64_t*>(m_code+m_pc);
                 m_pc += sizeof(int64_t);
-                push(DurianObject(fnAddress, DurianType::Function));
+                push(DurianObject(*reinterpret_cast<int8_t*>(p_fnAddress), p_fnAddress + sizeof(int8_t)));
                 break;
             case Opcode::DUP:
                 a = pop();
@@ -72,7 +72,7 @@ int VM::run() {
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
-                    push(DurianObject(a.value.ival + b.value.ival, DurianType::Integer));
+                    push(a.value.ival + b.value.ival);
                 } else if (a.type == DurianType::Integer && b.type == DurianType::Double) {
                     push(a.value.ival + b.value.dval);
                 } else if (a.type == DurianType::Double && b.type == DurianType::Integer) {
@@ -88,7 +88,7 @@ int VM::run() {
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
-                    push(DurianObject(a.value.ival - b.value.ival, DurianType::Integer));
+                    push(a.value.ival - b.value.ival);
                 } else if (a.type == DurianType::Integer && b.type == DurianType::Double) {
                     push(a.value.ival - b.value.dval);
                 } else if (a.type == DurianType::Double && b.type == DurianType::Integer) {
@@ -103,7 +103,7 @@ int VM::run() {
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
-                    push(DurianObject(a.value.ival * b.value.ival, DurianType::Integer));
+                    push(a.value.ival * b.value.ival);
                 } else if (a.type == DurianType::Integer && b.type == DurianType::Double) {
                     push(a.value.ival * b.value.dval);
                 } else if (a.type == DurianType::Double && b.type == DurianType::Integer) {
@@ -136,7 +136,7 @@ int VM::run() {
             case Opcode::NEG:
                 a = pop();
                 if (a.type == DurianType::Integer) {
-                    push(DurianObject(-a.value.ival, DurianType::Integer));
+                    push(-a.value.ival);
                 } else if (a.type == DurianType::Double) {
                     push(-a.value.dval);
                 } else {
@@ -188,8 +188,8 @@ int VM::run() {
                 }
                 break;
             case Opcode::CALL:
-                push(DurianObject(m_fp, DurianType::Integer));
-                push(DurianObject(m_pc, DurianType::Integer));
+                push(m_fp);
+                push(m_pc);
                 m_fp = m_sp;
                 break;
             case Opcode::RET:

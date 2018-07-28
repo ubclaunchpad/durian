@@ -20,7 +20,7 @@ set(SOURCE_FILES
         src/interpreter/vm/VM.cpp)
 
 set(TEST_FILES
-        test/TestLexer.cpp test/TestParser.cpp)
+        test/TestLexer.cpp test/TestParser.cpp src/include/DurianFunction.h)
 
 add_executable(durian
         src/main.cpp

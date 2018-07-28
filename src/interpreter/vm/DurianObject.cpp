@@ -12,8 +12,8 @@ DurianObject::DurianObject(double dval) :
     value.dval = dval;
 }
 
-DurianObject::DurianObject(int64_t ival, DurianType type = DurianType::Integer) :
-    type(type) {
+DurianObject::DurianObject(int64_t ival) :
+    type(DurianType::Integer) {
     value.ival = ival;
 }
 
@@ -26,6 +26,12 @@ DurianObject::DurianObject(int32_t len, unsigned char *sval) :
     type(DurianType::String) {
     value.sval.p_val = sval;
     value.sval.m_len = len;
+}
+
+DurianObject::DurianObject(int8_t len, int64_t fval) :
+        type(DurianType::Function) {
+    value.fval.m_len = len;
+    value.fval.m_val = fval;
 }
 
 std::ostream &operator<<(std::ostream &os, DurianType &type) {
