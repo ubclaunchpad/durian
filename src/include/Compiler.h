@@ -9,10 +9,12 @@
 class Compiler : public Visitor {
     std::vector<unsigned char> m_buffer;
     std::vector<unsigned char> m_header;
+    std::vector<uint8_t> m_staticStrings;
     std::unordered_map<std::string, uint64_t> m_staticStringMap;
     uint64_t m_currStaticStringIndex;
 public:
     std::vector<unsigned char> getBuffer() { return m_buffer; }
+    std::vector<uint8_t> getStaticStrings() { return m_staticStrings; };
     virtual void visit(AST::AssignStmt *node) override;
     virtual void visit(AST::BinaryExpr *node) override;
     virtual void visit(AST::BlockStmt *node) override;

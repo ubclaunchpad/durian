@@ -76,11 +76,15 @@ void Compiler::visit(AST::StringLit *node) {
     if (m_staticStringMap.find(lit) == m_staticStringMap.end()) {
         // string not present in static data, add
         idx = m_currStaticStringIndex;
+        std::array<uint8_t, sizeof(uint64_t)> tmpStr = {};
+        std::memcpy(tmpStr.data(), lit.data(), lit.size());
+        for (auto val : tmpStr) {
+            m_staticStrings.push_back(val);
+        }
         m_staticStringMap.insert({lit, m_currStaticStringIndex});
         m_currStaticStringIndex += lit.size();
     } else {
         idx = m_staticStringMap.at(lit);
-        std::array<uint8_t, sizeof(uint64_t)> tmp = {};
     }
     std::memcpy(tmp.data(), &idx, sizeof(uint64_t));
     for (auto val : tmp) {
