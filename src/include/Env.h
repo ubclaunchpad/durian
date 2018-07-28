@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 #include <inttypes.h>
-
+#include <string>
 
 class Env {
 public:
@@ -12,4 +12,4 @@ public:
 private:    
     std::unordered_map<std::string, int64_t> m_values;
     int64_t getNumVars();
-}
+};
