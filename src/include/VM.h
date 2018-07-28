@@ -6,9 +6,9 @@
 
 class VM {
     unsigned char *m_code;     // Pointer to bytecode
-    int m_pc;                  // Program Counter
-    int m_sp;                  // Stack Pointer
-    int m_fp;                  // Frame Pointer
+    int64_t m_pc;                  // Program Counter
+    int64_t m_sp;                  // Stack Pointer
+    int64_t m_fp;                  // Frame Pointer
     static const int STACK_SIZE = 256;
     std::array<DurianObject, STACK_SIZE> m_stack; // Stack
 public:

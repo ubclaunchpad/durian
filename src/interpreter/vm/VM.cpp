@@ -195,7 +195,6 @@ int VM::run() {
             case Opcode::RET:
                 a = pop(); // return value
                 m_sp = m_fp;
-                // TODO: Discuss about int32 vs int64. The next two line loses data.
                 m_pc = pop().value.ival;
                 m_fp = pop().value.ival;
                 // TODO: Figure out popping function object and the related function parameters. What's the structure?
