@@ -1,3 +1,4 @@
+#include <Compiler.h>
 #include <Lexer.h>
 #include <Parser.h>
 #include <PrettyPrinter.h>
@@ -11,16 +12,16 @@
 class ArgParser {
     std::vector<std::string> args;
 public:
-    enum struct Mode{
+    enum struct Mode {
         PrettyPrint,
         CompileOnly,
         InterpretOnly,
         None
     } mode;
     std::pair<bool, std::string> optionalFilepath;
-    ArgParser(int argc, char** argv)
-        : mode(Mode::None)
-        , optionalFilepath() {
+
+    ArgParser(int argc, char **argv)
+            : mode(Mode::None), optionalFilepath() {
         for (int i = 0; i < argc; i++) {
             args.emplace_back(argv[i]);
         }
@@ -31,9 +32,9 @@ public:
         setModeIfExistsFlag("-c", Mode::CompileOnly);
         setModeIfExistsFlag("-b", Mode::InterpretOnly);
         if (args.back() != "-p" &&
-                args.back() != "-c" &&
-                args.back() != "-b" &&
-                args.back() != args.front()) {
+            args.back() != "-c" &&
+            args.back() != "-b" &&
+            args.back() != args.front()) {
             optionalFilepath.first = true;
             optionalFilepath.second = args.back();
         } else {
@@ -41,11 +42,13 @@ public:
             optionalFilepath.second = "";
         }
     }
+
 private:
-    bool optionExists(const std::string& option) {
+    bool optionExists(const std::string &option) {
         return std::find(args.begin(), args.end(), option) != args.end();
     }
-    void setModeIfExistsFlag(const std::string& flag, Mode mode) {
+
+    void setModeIfExistsFlag(const std::string &flag, Mode mode) {
         if (optionExists(flag)) {
             if (this->mode != Mode::None) {
                 std::cout << "Cannot specify multiple modes!" << std::endl;
@@ -54,23 +57,25 @@ private:
             this->mode = mode;
         }
     }
+
     [[noreturn]] void printHelpAndExit(int exitCode) {
         std::cout << "Optional command line arguments are: " << std::endl;
         std::cout << " -p [source]: Pretty print Durian source code." << std::endl;
         std::cout << " -c [source]: Produce bytecode but do not execute it." << std::endl;
         std::cout << " -b [source]: Execute the given bytecode." << std::endl;
         std::cout << "Each command optionally takes a path to source code or bytecode; if not provided, "
-                "a REPL will be launched." << std::endl;
+                     "a REPL will be launched." << std::endl;
         exit(exitCode);
     }
 };
 
 int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
+    std::cout << "Pretty printing..." << std::endl;
     if (optionalFilepath.first) {
         std::ifstream file(optionalFilepath.second);
         std::string input((std::istreambuf_iterator<char>(file)),
-                                std::istreambuf_iterator<char>());
-        Parser parser {Lexer(input)};
+                          std::istreambuf_iterator<char>());
+        Parser parser{Lexer(input)};
         PrettyPrinter pp;
         bool done = false;
         while (!done) {
@@ -104,7 +109,7 @@ int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
                     input += '\n';
                 }
             }
-            Parser parser {Lexer(input)};
+            Parser parser{Lexer(input)};
             while (true) {
                 auto ast = parser.parse();
                 if (ast == nullptr) {
@@ -119,21 +124,54 @@ int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
 }
 
 int compile(std::pair<bool, std::string> optionalFilepath) {
-    // TODO
+    std::cout << "Compiling only..." << std::endl;
+    if (optionalFilepath.first) {
+        std::cout << "Found filepath " << optionalFilepath.second << std::endl;
+        std::ifstream file(optionalFilepath.second);
+        std::string input((std::istreambuf_iterator<char>(file)),
+                          std::istreambuf_iterator<char>());
+        Parser parser{Lexer(input)};
+        std::vector<unsigned char> outBytecode;
+        bool done = false;
+        while (!done) {
+            auto ast = parser.parse();
+            if (ast == nullptr) {
+                done = true;
+            } else {
+                Compiler compiler;
+                ast->accept(&compiler);
+                for (unsigned char bytecode : compiler.getBuffer()) {
+                    outBytecode.push_back(bytecode);
+                }
+            }
+        }
+        std::ofstream outFile("tmp.durb", std::ios::binary);
+        std::copy(outBytecode.cbegin(),
+                  outBytecode.cend(),
+                  std::ostreambuf_iterator(outFile));
+        for (unsigned char bytecode : outBytecode) {
+            printf("%.2X ", bytecode);
+        }
+        return 0;
+    } else {
+        // TODO REPL
+    }
     return 0;
 }
 
 int interpretBytecode(std::pair<bool, std::string> optionalFilepath) {
+    std::cout << "Running bytecode..." << std::endl;
     // TODO
     return 0;
 }
 
 int execute(std::pair<bool, std::string> optionalFilepath) {
+    std::cout << "Executing..." << std::endl;
     // TODO
     return 0;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     ArgParser argParser(argc, argv);
     switch (argParser.mode) {
         case ArgParser::Mode::PrettyPrint:
