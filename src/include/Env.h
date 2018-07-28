@@ -7,6 +7,8 @@
 class Env {
 public:
     Env *m_parent;    
+    int64_t lookUpVar(std::string);
+    void declVar(std::string);
 private:    
-    std::unordered_map<string, int64_t> m_values;
+    std::unordered_map<std::string, int64_t> m_values;
 }
