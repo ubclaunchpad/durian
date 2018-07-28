@@ -15,6 +15,7 @@ set(SOURCE_FILES
         src/compiler/Compiler.cpp
         src/lexer/Lexer.cpp
         src/parser/Parser.cpp
+        src/env/Env.cpp
         src/pretty_printer/PrettyPrinter.cpp
         src/interpreter/vm/DurianObject.cpp
         src/interpreter/vm/VM.cpp)
