@@ -197,9 +197,10 @@ int VM::run() {
                 m_sp = m_fp;
                 m_pc = pop().value.ival;
                 m_fp = pop().value.ival;
-                // TODO: Figure out popping function object and the related function parameters. What's the structure?
-                // b = pop(); // Function DurianObject
-                // pop parameters
+                b = pop(); // Function DurianObject
+                for (int i = 0; i < b.value.fval.m_len; i++) {
+                    pop();
+                }
                 push(a);
                 break;
             // More cases here

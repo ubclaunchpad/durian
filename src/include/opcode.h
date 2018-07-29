@@ -4,7 +4,7 @@ namespace Opcode {
     // Note: This is a raw enum, instead of an enum struct, because we need to be able to treat these as raw characters.
     enum : unsigned char {
         NOP      = 0x00, // pass
-        ICONST   = 0x02, // push next 8 bytes onto stack as integer constan
+        ICONST   = 0x02, // push next 8 bytes onto stack as integer constant
         ICONST_0 = 0x04, // push literal int(0) onto stack
         ICONST_1 = 0x05, // push literal int(1) onto stack
         DCONST   = 0x0A, // push next 8 bytes onto stack as double constant
