@@ -15,4 +15,7 @@ gtest_main.pc
 Makefile
 
 # binaries
+durian
 durian_test
+*.cbp
+*.durb
