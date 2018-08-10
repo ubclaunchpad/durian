@@ -3,6 +3,56 @@
 #include <Parser.h>
 #include <cstdio>
 
+TEST(TestParser, TestIfStatementNoElse) {
+    Parser parser(Lexer("if a {\n    break\n}"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* ifStmt = dynamic_cast<AST::IfStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> condExpr = std::move(ifStmt->m_condition);
+    auto* ident = dynamic_cast<AST::Identifier*>(condExpr.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+    std::unique_ptr<AST::BlockStmt> trueBody = std::move(ifStmt->m_trueBody);
+    std::unique_ptr<AST::Stmt> firstStmt = std::move(trueBody->m_statements.front());
+    auto* breakStmt = dynamic_cast<AST::BreakStmt*>(firstStmt.get());
+    ASSERT_EQ(nullptr, ifStmt->m_falseBody);
+}
+
+TEST(TestParser, TestMultilevelIfStatement) {
+    Parser parser(Lexer("if a {\n    break\n} elif b {\n    next\n} else {\n    break\n}"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* ifStmt = dynamic_cast<AST::IfStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> condExpr = std::move(ifStmt->m_condition);
+    auto* ident = dynamic_cast<AST::Identifier*>(condExpr.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+    std::unique_ptr<AST::BlockStmt> trueBody = std::move(ifStmt->m_trueBody);
+    std::unique_ptr<AST::Stmt> firstStmt = std::move(trueBody->m_statements.front());
+    auto* breakStmt = dynamic_cast<AST::BreakStmt*>(firstStmt.get());
+    std::unique_ptr<AST::Stmt> falseBody = std::move(ifStmt->m_falseBody);
+    auto* elifStmt = dynamic_cast<AST::IfStmt*>(falseBody.get());
+    condExpr = std::move(elifStmt->m_condition);
+    ident = dynamic_cast<AST::Identifier*>(condExpr.get());
+    ASSERT_EQ(ident->m_identStr, "b");
+    trueBody = std::move(elifStmt->m_trueBody);
+    firstStmt = std::move(trueBody->m_statements.front());
+    auto* nextStmt = dynamic_cast<AST::NextStmt*>(firstStmt.get());
+    falseBody = std::move(elifStmt->m_falseBody);
+    auto* blockStmt = dynamic_cast<AST::BlockStmt*>(falseBody.get());
+    firstStmt = std::move(blockStmt->m_statements.front());
+    breakStmt = dynamic_cast<AST::BreakStmt*>(firstStmt.get());
+    ASSERT_EQ(nullptr, ifStmt->m_falseBody);
+}
+
+TEST(TestParser, TestWhileStatement) {
+    Parser parser(Lexer("while a {\n    break\n}"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* whileStmt = dynamic_cast<AST::WhileStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> condExpr = std::move(whileStmt->m_condition);
+    auto* ident = dynamic_cast<AST::Identifier*>(condExpr.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+    std::unique_ptr<AST::BlockStmt> body = std::move(whileStmt->m_body);
+    std::unique_ptr<AST::Stmt> firstStmt = std::move(body->m_statements.front());
+    auto* breakStmt = dynamic_cast<AST::BreakStmt*>(firstStmt.get());
+}
+
 TEST(TestParser, TestReturnStatement) {
     Parser parser(Lexer("return a"));
     std::unique_ptr<AST::Stmt> stmt = parser.parse();
@@ -11,6 +61,76 @@ TEST(TestParser, TestReturnStatement) {
     auto* ident = dynamic_cast<AST::Identifier*>(retVal.get());
     ASSERT_EQ(ident->m_identStr, "a");
 }
+
+TEST(TestParser, TestLetStatement) {
+    Parser parser(Lexer("let a = 1"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* letStmt = dynamic_cast<AST::LetStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> lval = std::move(letStmt->m_ident);
+    auto* ident = dynamic_cast<AST::Identifier*>(lval.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+    std::unique_ptr<AST::Expr> val = std::move(letStmt->m_expr);
+    auto* lit = dynamic_cast<AST::IntegerLit*>(val.get());
+    ASSERT_EQ(lit->m_value, 1);
+}
+
+TEST(TestParser, TestAssignStatement) {
+    Parser parser(Lexer("a = 1"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* assignStmt = dynamic_cast<AST::AssignStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> lval = std::move(assignStmt->m_ident);
+    auto* ident = dynamic_cast<AST::Identifier*>(lval.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+    std::unique_ptr<AST::Expr> val = std::move(assignStmt->m_expr);
+    auto* lit = dynamic_cast<AST::IntegerLit*>(val.get());
+    ASSERT_EQ(lit->m_value, 1);
+}
+
+TEST(TestParser, TestPrintStatement) {
+    Parser parser(Lexer("print a"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* printStmt = dynamic_cast<AST::PrintStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> expr = std::move(printStmt->m_expr);
+    auto* ident = dynamic_cast<AST::Identifier*>(expr.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+}
+
+TEST(TestParser, TestErrStatement) {
+    Parser parser(Lexer("err a"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* errStmt = dynamic_cast<AST::ErrStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> expr = std::move(errStmt->m_expr);
+    auto* ident = dynamic_cast<AST::Identifier*>(expr.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+}
+
+TEST(TestParser, TestScanStatement) {
+    Parser parser(Lexer("scan a"));
+    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+    auto* scanStmt = dynamic_cast<AST::ScanStmt*>(stmt.get());
+    std::unique_ptr<AST::Expr> expr = std::move(scanStmt->m_ident);
+    auto* ident = dynamic_cast<AST::Identifier*>(expr.get());
+    ASSERT_EQ(ident->m_identStr, "a");
+}
+
+// TODO fix function declaration parsing! (works in debugger but not otherwise...)
+//TEST(TestParser, TestFnDecl) {
+//    Parser parser(Lexer(
+//            R"delim(def f(a,b) {
+//                        return 1.0
+//                    })delim"));
+//    std::unique_ptr<AST::Stmt> stmt = parser.parse();
+//    auto* fnDecl = dynamic_cast<AST::FnDecl*>(stmt.get());
+//    std::unique_ptr<AST::Expr> expr = std::move(fnDecl->m_ident);
+//    auto* ident = dynamic_cast<AST::Identifier*>(expr.get());
+//    ASSERT_EQ(ident->m_identStr, "f");
+//    std::vector<std::unique_ptr<AST::Identifier>> params = std::move(fnDecl->m_params);
+//    ASSERT_EQ(params[0]->m_identStr, "a");
+//    ASSERT_EQ(params[1]->m_identStr, "b");
+//    std::unique_ptr<AST::BlockStmt> body = std::move(fnDecl->m_body);
+//    std::unique_ptr<AST::Stmt> firstStmt = std::move(body->m_statements.front());
+//    auto* breakStmt = dynamic_cast<AST::BreakStmt*>(firstStmt.get());
+//}
 
 TEST(TestParser, TestUnaryPlusExpr) {
     Parser parser(Lexer("+a"));

@@ -68,7 +68,8 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt() {
 
     if (m_currToken.type == TokenType::Let) {
         eatToken(TokenType::Let);
-        Token id = eatToken(TokenType::Identifier);
+        Token id = m_currToken;
+        eatToken(TokenType::Identifier);
         eatToken(TokenType::Equal);
         auto val = parseExpr();
         return std::make_unique<AST::LetStmt>(std::make_unique<AST::Identifier>(id.literal), std::move(val));
@@ -88,7 +89,8 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt() {
 
     if (m_currToken.type == TokenType::Scan) {
         eatToken(TokenType::Scan);
-        Token id = eatToken(TokenType::Identifier);
+        Token id = m_currToken;
+        eatToken(TokenType::Identifier);
         return std::make_unique<AST::ScanStmt>(std::make_unique<AST::Identifier>(id.literal));
     }
 
