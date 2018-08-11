@@ -69,14 +69,15 @@ void Compiler::visit(AST::ReturnStmt *node) {}
 void Compiler::visit(AST::ScanStmt *node) {}
 
 void Compiler::visit(AST::StringLit *node) {
-    const std::string lit = node->m_value;
+    m_buffer.push_back(Opcode::NEWSTR8);
 
-    std::array<uint8_t, sizeof(uint64_t)> tmp = {};
-    uint64_t idx;
+    const std::string lit = node->m_value;
+    std::array<uint8_t, sizeof(uint32_t)> tmp = {};
+    uint32_t idx;
     if (m_staticStringMap.find(lit) == m_staticStringMap.end()) {
         // string not present in static data, add
         idx = m_currStaticStringIndex;
-        std::array<uint8_t, sizeof(uint64_t)> tmpStr = {};
+        std::array<uint8_t, sizeof(uint32_t)> tmpStr = {};
         std::memcpy(tmpStr.data(), lit.data(), lit.size());
         for (auto val : tmpStr) {
             m_staticStrings.push_back(val);
@@ -86,11 +87,10 @@ void Compiler::visit(AST::StringLit *node) {
     } else {
         idx = m_staticStringMap.at(lit);
     }
-    std::memcpy(tmp.data(), &idx, sizeof(uint64_t));
+    std::memcpy(tmp.data(), &idx, sizeof(uint32_t));
     for (auto val : tmp) {
         m_buffer.push_back(val);
     }
-    m_buffer.push_back(Opcode::NEWSTR8);
 }
 
 void Compiler::visit(AST::UnaryExpr *node) {

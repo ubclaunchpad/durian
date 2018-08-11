@@ -10,8 +10,8 @@ class Compiler : public Visitor {
     std::vector<unsigned char> m_buffer;
     std::vector<unsigned char> m_header;
     std::vector<uint8_t> m_staticStrings;
-    std::unordered_map<std::string, uint64_t> m_staticStringMap;
-    uint64_t m_currStaticStringIndex;
+    std::unordered_map<std::string, uint32_t> m_staticStringMap;
+    uint32_t m_currStaticStringIndex;
 public:
     std::vector<unsigned char> getBuffer() { return m_buffer; }
     std::vector<uint8_t> getStaticStrings() { return m_staticStrings; };
