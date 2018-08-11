@@ -28,6 +28,12 @@ DurianObject::DurianObject(int32_t len, unsigned char *sval) :
     value.sval.m_len = len;
 }
 
+DurianObject::DurianObject(int8_t len, int64_t fval) :
+        type(DurianType::Function) {
+    value.fval.m_len = len;
+    value.fval.m_val = fval;
+}
+
 std::ostream &operator<<(std::ostream &os, DurianType &type) {
     // Make sure all cases are covered when adding new types.
     switch (type) {
@@ -42,6 +48,9 @@ std::ostream &operator<<(std::ostream &os, DurianType &type) {
             break;
         case DurianType::String:
             os << "str";
+            break;
+        case DurianType::Function:
+            os << "fn";
             break;
     }
     return os;
