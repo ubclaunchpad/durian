@@ -14,8 +14,7 @@ VM::VM(unsigned char *bytecode) :
     m_code(bytecode),
     m_pc(0),
     m_sp(0),
-    m_fp(0),
-    m_stack {} {
+    m_fp(0) {
     // Do nothing.
 }
 
@@ -36,24 +35,24 @@ int VM::run() {
                 push(DurianObject(*reinterpret_cast<int32_t*>(p_headerStr), p_headerStr + sizeof(int32_t)));
                 break;
             case Opcode::ICONST:
-                push(*reinterpret_cast<int64_t*>(m_code+m_pc));
+                push(DurianObject(*reinterpret_cast<int64_t*>(m_code+m_pc)));
                 m_pc += sizeof(int64_t);
                 break;
             case Opcode::ICONST_0:
-                push((int64_t)0);
+                push(DurianObject((int64_t)0));
                 break;
             case Opcode::ICONST_1:
-                push((int64_t)1);
+                push(DurianObject((int64_t)1));
                 break;
             case Opcode::DCONST:
-                push(*reinterpret_cast<double*>(m_code+m_pc));
+                push(DurianObject(*reinterpret_cast<double*>(m_code+m_pc)));
                 m_pc += sizeof(double);
                 break;
             case Opcode::BCONST_F:
-                push(false);
+                push(DurianObject(false));
                 break;
             case Opcode::BCONST_T:
-                push(true);
+                push(DurianObject(true));
                 break;
             case Opcode::FCONST:
                 p_fnAddress = m_code + *reinterpret_cast<int64_t*>(m_code+m_pc);
@@ -72,13 +71,13 @@ int VM::run() {
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
-                    push(a.value.ival + b.value.ival);
+                    push(DurianObject(a.value.ival + b.value.ival));
                 } else if (a.type == DurianType::Integer && b.type == DurianType::Double) {
-                    push(a.value.ival + b.value.dval);
+                    push(DurianObject(a.value.ival + b.value.dval));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Integer) {
-                    push(a.value.dval + b.value.ival);
+                    push(DurianObject(a.value.dval + b.value.ival));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
-                    push(a.value.dval + b.value.dval);
+                    push(DurianObject(a.value.dval + b.value.dval));
                 } else {
                     typeError("+", a, b);
                     exit(EXIT_FAILURE);
@@ -88,13 +87,13 @@ int VM::run() {
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
-                    push(a.value.ival - b.value.ival);
+                    push(DurianObject(a.value.ival - b.value.ival));
                 } else if (a.type == DurianType::Integer && b.type == DurianType::Double) {
-                    push(a.value.ival - b.value.dval);
+                    push(DurianObject(a.value.ival - b.value.dval));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Integer) {
-                    push(a.value.dval - b.value.ival);
+                    push(DurianObject(a.value.dval - b.value.ival));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
-                    push(a.value.dval - b.value.dval);
+                    push(DurianObject(a.value.dval - b.value.dval));
                 } else {
                     typeError("-", a, b);
                     exit(EXIT_FAILURE);
@@ -103,13 +102,13 @@ int VM::run() {
                 b = pop();
                 a = pop();
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
-                    push(a.value.ival * b.value.ival);
+                    push(DurianObject(a.value.ival * b.value.ival));
                 } else if (a.type == DurianType::Integer && b.type == DurianType::Double) {
-                    push(a.value.ival * b.value.dval);
+                    push(DurianObject(a.value.ival * b.value.dval));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Integer) {
-                    push(a.value.dval * b.value.ival);
+                    push(DurianObject(a.value.dval * b.value.ival));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
-                    push(a.value.dval * b.value.dval);
+                    push(DurianObject(a.value.dval * b.value.dval));
                 } else {
                     typeError("*", a, b);
                     exit(EXIT_FAILURE);
@@ -122,13 +121,13 @@ int VM::run() {
                     std::cout << "DivisionByZeroError." << std::endl;
                 }
                 if (a.type == DurianType::Integer && b.type == DurianType::Integer) {
-                    push((double)a.value.ival / (double)b.value.ival);
+                    push(DurianObject((double)a.value.ival / (double)b.value.ival));
                 } else if (a.type == DurianType::Integer && b.type == DurianType::Double) {
-                    push(a.value.ival / b.value.dval);
+                    push(DurianObject(a.value.ival / b.value.dval));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Integer) {
-                    push(a.value.dval / b.value.ival);
+                    push(DurianObject(a.value.dval / b.value.ival));
                 } else if (a.type == DurianType::Double && b.type == DurianType::Double) {
-                    push(a.value.dval / b.value.dval);
+                    push(DurianObject(a.value.dval / b.value.dval));
                 } else {
                     typeError("/", a, b);
                     exit(EXIT_FAILURE);
@@ -136,9 +135,9 @@ int VM::run() {
             case Opcode::NEG:
                 a = pop();
                 if (a.type == DurianType::Integer) {
-                    push(-a.value.ival);
+                    push(DurianObject(-a.value.ival));
                 } else if (a.type == DurianType::Double) {
-                    push(-a.value.dval);
+                    push(DurianObject(-a.value.dval));
                 } else {
                     typeError("-", a);
                     exit(EXIT_FAILURE);
@@ -147,7 +146,7 @@ int VM::run() {
             case Opcode::NOT:
                 a = pop();
                 if (a.type == DurianType::Boolean) {
-                    push(!a.value.bval);
+                    push(DurianObject(!a.value.bval));
                 } else {
                     typeError("!", a);
                     exit(EXIT_FAILURE);
@@ -188,8 +187,8 @@ int VM::run() {
                 }
                 break;
             case Opcode::CALL:
-                push(m_fp);
-                push(m_pc);
+                push(DurianObject(m_fp));
+                push(DurianObject(m_pc));
                 m_fp = m_sp;
                 break;
             case Opcode::RET:

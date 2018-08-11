@@ -10,6 +10,7 @@ namespace Opcode {
         DCONST   = 0x0A, // push next 8 bytes onto stack as double constant
         BCONST_F = 0x0E, // push literal bool(false) onto stack
         BCONST_T = 0x0F, // push literal bool(true) onto stack
+        FCONST    = 0x12, // push function literal onto stack
         DUP      = 0x58, // duplicate top of stack
         POP      = 0x5F, // pops top of stack
         ADD      = 0x60, // pop top two elements, add, push result
