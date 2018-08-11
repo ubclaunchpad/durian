@@ -2,17 +2,18 @@
 #include <iostream>
 #include <cstdlib>
 
-Parser::Parser(const Lexer lexer)
+Parser::Parser(const Lexer& lexer)
         : m_lexer(lexer) {
     m_currToken = m_lexer.getToken();
 }
 
-Token Parser::eatToken(const TokenType tok) {
+void Parser::eatToken(const TokenType tok) {
     if (m_currToken.type != tok) {
+        // TODO better error handling
         std::cerr << "Unexpected token " << m_currToken.toString() << " at line " << m_currToken.line << std::endl;
         exit(1);
     }
-    return m_currToken = m_lexer.getToken();
+    m_currToken = m_lexer.getToken();
 }
 
 std::unique_ptr<AST::Stmt> Parser::parse() {
