@@ -2,19 +2,20 @@
 
 #include <unordered_map>
 
-#include <Parser.h>
 #include <ASTree.h>
+#include <Parser.h>
+#include <Types.h>
 #include <Visitor.h>
 
 class Compiler : public Visitor {
-    std::vector<unsigned char> m_buffer;
-    std::vector<unsigned char> m_header;
-    std::vector<uint8_t> m_staticStrings;
-    std::unordered_map<std::string, uint32_t> m_staticStringMap;
-    uint32_t m_currStaticStringIndex;
+    std::vector<Bytecode> m_buffer;
+    std::vector<Bytecode> m_header;
+    std::vector<Bytecode> m_staticStrings;
+    std::unordered_map<std::string, BytecodePointer> m_staticStringMap;
+    BytecodePointer m_currStaticStringIndex;
 public:
-    std::vector<unsigned char> getBuffer() { return m_buffer; }
-    std::vector<uint8_t> getStaticStrings() { return m_staticStrings; };
+    std::vector<Bytecode> getBuffer() { return m_buffer; }
+    std::vector<Bytecode> getStaticStrings() { return m_staticStrings; };
     virtual void visit(AST::AssignStmt *node) override;
     virtual void visit(AST::BinaryExpr *node) override;
     virtual void visit(AST::BlockStmt *node) override;
