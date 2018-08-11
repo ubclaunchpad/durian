@@ -8,6 +8,8 @@
 #include <iostream>
 #include <vector>
 
+typedef std::pair<bool, std::string> OptionalFilepath;
+
 // based on https://stackoverflow.com/a/868894
 class ArgParser {
     std::vector<std::string> args;
@@ -19,10 +21,10 @@ public:
         InterpretOnly,
         None
     } mode;
-    std::pair<bool, std::string> optionalFilepath;
+    OptionalFilepath input;
 
     ArgParser(int argc, char **argv)
-            : verbose(false), mode(Mode::None), optionalFilepath() {
+            : verbose(false), mode(Mode::None), input() {
         for (int i = 0; i < argc; i++) {
             args.emplace_back(argv[i]);
         }
@@ -40,11 +42,11 @@ public:
             args.back() != "-b" &&
             args.back() != "-v" &&
             args.back() != args.front()) {
-            optionalFilepath.first = true;
-            optionalFilepath.second = args.back();
+            input.first = true;
+            input.second = args.back();
         } else {
-            optionalFilepath.first = false;
-            optionalFilepath.second = "";
+            input.first = false;
+            input.second = "";
         }
     }
 
@@ -74,13 +76,13 @@ private:
     }
 };
 
-int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
+int prettyPrint(OptionalFilepath input) {
     std::cout << "Pretty printing..." << std::endl;
-    if (optionalFilepath.first) {
-        std::ifstream file(optionalFilepath.second);
-        std::string input((std::istreambuf_iterator<char>(file)),
-                          std::istreambuf_iterator<char>());
-        Parser parser{Lexer(input)};
+    if (input.first) {
+        std::ifstream file(input.second);
+        std::string source((std::istreambuf_iterator<char>(file)),
+                           std::istreambuf_iterator<char>());
+        Parser parser{Lexer(source)};
         PrettyPrinter pp;
         bool done = false;
         while (!done) {
@@ -97,11 +99,11 @@ int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
         PrettyPrinter pp;
         std::cout << "Input some code! Type `fin` when you're done." << std::endl;
         while (true) {
-            std::string input;
-            std::getline(std::cin, input);
-            if (input == "fin") {
+            std::string source;
+            std::getline(std::cin, source);
+            if (source == "fin") {
                 break;
-            } else if (input.back() == '{') {
+            } else if (source.back() == '{') {
                 // TODO make a less hacky way for this
                 bool multilineDone = false;
                 while (!multilineDone) {
@@ -110,11 +112,11 @@ int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
                     if (temp == "}") {
                         multilineDone = true;
                     }
-                    input += temp;
-                    input += '\n';
+                    source += temp;
+                    source += '\n';
                 }
             }
-            Parser parser{Lexer(input)};
+            Parser parser{Lexer(source)};
             while (true) {
                 auto ast = parser.parse();
                 if (ast == nullptr) {
@@ -128,14 +130,15 @@ int prettyPrint(std::pair<bool, std::string> optionalFilepath) {
     }
 }
 
-int compile(std::pair<bool, std::string> optionalFilepath, bool verbose) {
+int compile(OptionalFilepath input, bool verbose) {
     std::cout << "Compiling only..." << std::endl;
-    if (optionalFilepath.first) {
-        std::cout << "Found filepath " << optionalFilepath.second << std::endl;
-        std::ifstream file(optionalFilepath.second);
-        std::string input((std::istreambuf_iterator<char>(file)),
-                          std::istreambuf_iterator<char>());
-        Parser parser{Lexer(input)};
+    if (input.first) {
+        std::cout << "Found filepath " << input.second << std::endl;
+        std::ifstream file(input.second);
+        std::string source((std::istreambuf_iterator<char>(file)),
+                           std::istreambuf_iterator<char>());
+        Parser parser{Lexer(source)};
+        Compiler compiler;
         std::vector<unsigned char> outBytecode;
         bool done = false;
         while (!done) {
@@ -143,18 +146,23 @@ int compile(std::pair<bool, std::string> optionalFilepath, bool verbose) {
             if (ast == nullptr) {
                 done = true;
             } else {
-                Compiler compiler;
                 ast->accept(&compiler);
                 for (unsigned char bytecode : compiler.getBuffer()) {
                     outBytecode.push_back(bytecode);
                 }
             }
         }
-        std::ofstream outFile("tmp.durb", std::ios::binary);
+        outBytecode.push_back(Opcode::HALT);
+        std::vector<uint8_t> strings = compiler.getStaticStrings();
+        std::string outFileName = std::string(input.second);
+        outFileName += 'b';
+        std::ofstream outFile(outFileName, std::ios::binary);
+        std::copy(strings.cbegin(),
+                  strings.cend(),
+                  std::ostreambuf_iterator<char>(outFile));
         std::copy(outBytecode.cbegin(),
                   outBytecode.cend(),
                   std::ostreambuf_iterator<char>(outFile));
-        
         if (verbose) {
             for (unsigned char bytecode : outBytecode) {
                 printf("%.2X ", bytecode);
@@ -168,29 +176,48 @@ int compile(std::pair<bool, std::string> optionalFilepath, bool verbose) {
     return 0;
 }
 
-int interpretBytecode(std::pair<bool, std::string> optionalFilepath, bool verbose) {
+int interpretBytecode(OptionalFilepath input, bool verbose) {
     std::cout << "Running bytecode..." << std::endl;
+    if (input.first) {
+        std::cout << "Found filepath " << input.second << std::endl;
+        std::ifstream file(input.second);
+    } else {
+        // TODO REPL
+    }
     // TODO
     return 0;
 }
 
-int execute(std::pair<bool, std::string> optionalFilepath, bool verbose) {
+int execute(OptionalFilepath input, bool verbose) {
     std::cout << "Executing..." << std::endl;
-    // TODO
-    return 0;
+    int compileResult = compile(input, verbose);
+    if (compileResult != 0) {
+        std::cout << "Compilation failed" << std::endl;
+        return compileResult;
+    }
+    OptionalFilepath bytecodeFile;
+    bytecodeFile.first = true;
+    if (!input.first) {
+        bytecodeFile.second = "temp.durb";
+    } else {
+        bytecodeFile.second += input.second;
+        bytecodeFile.second += 'b';
+    }
+    return interpretBytecode(bytecodeFile, verbose);
 }
 
 int main(int argc, char *argv[]) {
     ArgParser argParser(argc, argv);
     switch (argParser.mode) {
         case ArgParser::Mode::PrettyPrint:
-            return prettyPrint(argParser.optionalFilepath);
+            return prettyPrint(argParser.input);
         case ArgParser::Mode::CompileOnly:
-            return compile(argParser.optionalFilepath, argParser.verbose);
+            return compile(argParser.input, argParser.verbose);
         case ArgParser::Mode::InterpretOnly:
-            return interpretBytecode(argParser.optionalFilepath, argParser.verbose);
+            return interpretBytecode(argParser.input, argParser.verbose);
         default:
-            return execute(argParser.optionalFilepath, argParser.verbose);
+            return execute(argParser.input, argParser.verbose);
+
     }
 }
 
