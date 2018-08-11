@@ -30,10 +30,10 @@ void Compiler::visit(AST::ExprStmt *node) {
 }
 
 void Compiler::visit(AST::FloatLit *node) {
-    std::array<unsigned char, sizeof(double)> tmp = {};
+    std::array<Bytecode, sizeof(double)> tmp = {};
     memcpy(tmp.data(), &node->m_value, sizeof(double));
     m_buffer.push_back(Opcode::DCONST);
-    for (unsigned char val : tmp) {
+    for (auto val : tmp) {
         m_buffer.push_back(val);
     }
 }
@@ -47,10 +47,10 @@ void Compiler::visit(AST::Identifier *node) {}
 void Compiler::visit(AST::IfStmt *node) {}
 
 void Compiler::visit(AST::IntegerLit *node) {
-    std::array<unsigned char, sizeof(double)> tmp = {};
+    std::array<Bytecode, sizeof(double)> tmp = {};
     memcpy(tmp.data(), &node->m_value, sizeof(int64_t));
     m_buffer.push_back(Opcode::ICONST);
-    for (unsigned char val : tmp) {
+    for (auto val : tmp) {
         m_buffer.push_back(val);
     }
 }
@@ -72,12 +72,12 @@ void Compiler::visit(AST::StringLit *node) {
     m_buffer.push_back(Opcode::NEWSTR8);
 
     const std::string lit = node->m_value;
-    std::array<uint8_t, sizeof(uint32_t)> tmp = {};
-    uint32_t idx;
+    std::array<Bytecode, sizeof(uint32_t)> tmp = {};
+    BytecodePointer idx;
     if (m_staticStringMap.find(lit) == m_staticStringMap.end()) {
         // string not present in static data, add
         idx = m_currStaticStringIndex;
-        std::array<uint8_t, sizeof(uint32_t)> tmpStr = {};
+        std::array<Bytecode, sizeof(uint32_t)> tmpStr = {};
         std::memcpy(tmpStr.data(), lit.data(), lit.size());
         for (auto val : tmpStr) {
             m_staticStrings.push_back(val);

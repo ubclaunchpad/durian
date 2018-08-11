@@ -10,7 +10,7 @@
 
 // Public
 
-VM::VM(unsigned char *bytecode) :
+VM::VM(Bytecode *bytecode) :
     m_code(bytecode),
     m_pc(0),
     m_sp(0),
@@ -20,12 +20,12 @@ VM::VM(unsigned char *bytecode) :
 
 int VM::run() {
     while(true) {
-        unsigned char opcode = nextBytecode();
+        Bytecode opcode = nextBytecode();
         DURIAN_DEBUG_LOG("%x\n", opcode);
         DurianObject a, b;
         int32_t jumpLen; // Jump length
-        unsigned char *p_headerStr; // String (length: 8 bytes, value: length bytes) pointer
-        unsigned char *p_fnAddress; // Function Address
+        Bytecode *p_headerStr; // String (length: 8 bytes, value: length bytes) pointer
+        Bytecode *p_fnAddress; // Function Address
         switch (opcode) {
             case Opcode::HALT: return 0;
             case Opcode::NOP: break;
