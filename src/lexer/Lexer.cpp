@@ -1,6 +1,6 @@
 #include <Lexer.h>
 
-Lexer::Lexer(const std::string input)
+Lexer::Lexer(const std::string& input)
     : m_input(input)
     , m_iter(input.cbegin())
     , m_line(1)
