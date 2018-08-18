@@ -11,8 +11,8 @@ class Compiler : public Visitor {
     std::vector<Bytecode> m_buffer;
     std::vector<Bytecode> m_header;
     std::vector<Bytecode> m_staticStrings;
-    std::unordered_map<std::string, BytecodePointer> m_staticStringMap;
-    BytecodePointer m_currStaticStringIndex;
+    std::unordered_map<std::string, BytecodeIndex> m_staticStringMap;
+    BytecodeIndex m_currStaticStringIndex;
 public:
     std::vector<Bytecode> getBuffer() { return m_buffer; }
     std::vector<Bytecode> getStaticStrings() { return m_staticStrings; };
