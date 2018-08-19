@@ -1,8 +1,8 @@
 #include <VM.h>
 
-#include <debug.h>
+#include <Debug.h>
 #include <DurianObject.h>
-#include <opcode.h>
+#include <Opcode.h>
 
 #include <cstdlib>
 #include <iostream>

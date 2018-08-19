@@ -73,7 +73,7 @@ void Compiler::visit(AST::StringLit *node) {
 
     const std::string lit = node->m_value;
     std::array<Bytecode, sizeof(uint32_t)> tmp = {};
-    BytecodePointer idx;
+    BytecodeIndex idx;
     if (m_staticStringMap.find(lit) == m_staticStringMap.end()) {
         // string not present in static data, add
         idx = m_currStaticStringIndex;

@@ -16,8 +16,8 @@ set(SOURCE_FILES
         src/lexer/Lexer.cpp
         src/parser/Parser.cpp
         src/pretty_printer/PrettyPrinter.cpp
-        src/interpreter/vm/DurianObject.cpp
-        src/interpreter/vm/VM.cpp)
+        src/vm/DurianObject.cpp
+        src/vm/VM.cpp)
 
 set(TEST_FILES
         test/TestLexer.cpp test/TestParser.cpp)

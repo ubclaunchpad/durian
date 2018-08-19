@@ -3,4 +3,4 @@
 #include <cstdint>
 
 typedef uint8_t Bytecode;
-typedef int64_t BytecodePointer;
+typedef int64_t BytecodeIndex;

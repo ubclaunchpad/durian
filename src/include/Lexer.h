@@ -9,12 +9,12 @@ class Lexer {
     std::string::const_iterator m_iter;
     uint32_t m_line;
 public:
-    Lexer(const std::string input);
+    explicit Lexer(const std::string& input);
     const Token getToken();
 private:
-    bool isDigit(const char c) const;
-    bool isAlpha(const char c) const;
-    bool isIdentChar(const char c) const;
+    bool isDigit(char c) const;
+    bool isAlpha(char c) const;
+    bool isIdentChar(char c) const;
 };
 
 

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <iostream>
-#include <opcode.h>
+#include <Opcode.h>
 
 enum struct TokenType {
     // Delimiters

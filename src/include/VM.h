@@ -7,9 +7,9 @@
 
 class VM {
     Bytecode* m_code;     // Pointer to bytecode
-    BytecodePointer m_pc;                  // Program Counter
-    BytecodePointer m_sp;                  // Stack Pointer
-    BytecodePointer m_fp;                  // Frame Pointer
+    BytecodeIndex m_pc;                  // Program Counter
+    BytecodeIndex m_sp;                  // Stack Pointer
+    BytecodeIndex m_fp;                  // Frame Pointer
     static const int STACK_SIZE = 256;
     std::array<DurianObject, STACK_SIZE> m_stack; // Stack
 public:
