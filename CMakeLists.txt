@@ -17,7 +17,8 @@ set(SOURCE_FILES
         src/parser/Parser.cpp
         src/pretty_printer/PrettyPrinter.cpp
         src/vm/DurianObject.cpp
-        src/vm/VM.cpp)
+        src/vm/VM.cpp
+        src/treewalk/Interpreter.cpp)
 
 set(TEST_FILES
         test/TestLexer.cpp test/TestParser.cpp)
@@ -35,24 +36,24 @@ if (DEFINED ENV{DURIAN_COVERAGE})
     include(CodeCoverage)
     APPEND_COVERAGE_COMPILER_FLAGS()
     setup_target_for_coverage(NAME ${PROJECT_NAME}_coverage durian_test coverage)
-endif()
+endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
     target_compile_options(durian PRIVATE -Wall -Wextra -Wunreachable-code -Wpedantic)
-endif()
+endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(durian PRIVATE -Wexit-time-destructors -Wmissing-noreturn )
-endif()
+    target_compile_options(durian PRIVATE -Wexit-time-destructors -Wmissing-noreturn)
+endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_compile_options(durian PRIVATE /W4 /w44265 /w44061 /w44062 )
-endif()
+    target_compile_options(durian PRIVATE /W4 /w44265 /w44061 /w44062)
+endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
     target_compile_options(durian_test PRIVATE -Wall -Wextra -Wunreachable-code -Wpedantic)
-endif()
+endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(durian_test PRIVATE -Wexit-time-destructors -Wmissing-noreturn)
-endif()
+endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_compile_options(durian_test PRIVATE /W4 /w44265 /w44061 /w44062 )
-endif()
+    target_compile_options(durian_test PRIVATE /W4 /w44265 /w44061 /w44062)
+endif ()
