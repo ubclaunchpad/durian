@@ -76,13 +76,17 @@ void Compiler::visit(AST::StringLit *node) {
     BytecodeIndex idx;
     if (m_staticStringMap.find(lit) == m_staticStringMap.end()) {
         // string not present in static data, add
-        idx = m_currStaticStringIndex;
-        std::array<Bytecode, sizeof(uint32_t)> tmpStr = {};
-        std::memcpy(tmpStr.data(), lit.data(), lit.size());
-        for (auto val : tmpStr) {
+        uint64_t size = lit.size();
+        std::memcpy(tmp.data(), &size, sizeof(uint64_t));
+        for (auto val : tmp) {
             m_staticStrings.push_back(val);
         }
+        idx = m_currStaticStringIndex;
+        for (auto c : lit) {
+            m_staticStrings.push_back(c);
+        }
         m_staticStringMap.insert({lit, m_currStaticStringIndex});
+        m_currStaticStringIndex += sizeof(uint64_t);
         m_currStaticStringIndex += lit.size();
     } else {
         idx = m_staticStringMap.at(lit);
