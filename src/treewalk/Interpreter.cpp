@@ -5,16 +5,10 @@
 #include <ASTree.h>
 
 void Interpreter::visit(AST::AssignStmt *node) {
-    node->m_ident->accept(this);
     node->m_expr->accept(this);
     const DurianObject val = m_dataStack.top();
     m_dataStack.pop();
-    const DurianObject ident = m_dataStack.top();
-    m_dataStack.pop();
-    if (ident.type != DurianType::String) {
-        // TODO throw exception
-    }
-    m_currentScope->assign(std::string(ident.value.sval), val);
+    m_currentScope->assign(node->m_ident->m_identStr, val);
 }
 
 void Interpreter::visit(AST::BinaryExpr *node) {
@@ -281,7 +275,7 @@ void Interpreter::visit(AST::FnCall *node) {}
 void Interpreter::visit(AST::FnDecl *node) {}
 
 void Interpreter::visit(AST::Identifier *node) {
-    m_dataStack.push(DurianObject(node->m_identStr));
+    m_dataStack.push(m_currentScope->get(node->m_identStr));
 }
 
 void Interpreter::visit(AST::IfStmt *node) {
@@ -305,18 +299,12 @@ void Interpreter::visit(AST::IntegerLit *node) {
 }
 
 void Interpreter::visit(AST::LetStmt *node) {
-    node->m_ident->accept(this);
     node->m_expr->accept(this);
     const DurianObject val = m_dataStack.top();
     m_dataStack.pop();
-    const DurianObject ident = m_dataStack.top();
-    m_dataStack.pop();
-    if (ident.type != DurianType::String) {
-        // TODO throw exception
-    }
     std::shared_ptr<Environment> newScope = std::make_shared<Environment>(Environment(m_currentScope));
     m_currentScope = newScope;
-    m_currentScope->declare(std::string(ident.value.sval), val);
+    m_currentScope->declare(node->m_ident->m_identStr, val);
 }
 
 void Interpreter::visit(AST::NextStmt *) {

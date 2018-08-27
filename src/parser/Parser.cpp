@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 
-Parser::Parser(const Lexer& lexer)
+Parser::Parser(const Lexer &lexer)
         : m_lexer(lexer) {
     m_currToken = m_lexer.getToken();
 }
@@ -128,7 +128,10 @@ std::unique_ptr<AST::Stmt> Parser::parseStmt() {
         eatToken(TokenType::Equal);
         auto rval = parseExpr();
         // TODO: add checks that lval is valid.
-        return std::make_unique<AST::AssignStmt>(std::move(expr), std::move(rval));
+        auto *exprPtr = expr.get();
+        AST::Identifier *identPtr = dynamic_cast<AST::Identifier *>(exprPtr);
+        auto ident = std::unique_ptr<AST::Identifier>(identPtr);
+        return std::make_unique<AST::AssignStmt>(std::move(ident), std::move(rval));
     } else {
         return std::make_unique<AST::ExprStmt>(std::move(expr));
     }

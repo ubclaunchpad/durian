@@ -16,8 +16,8 @@ class ArgParser {
     std::vector<std::string> args;
 public:
     bool verbose;
+    bool prettyPrint;
     enum struct Mode {
-        PrettyPrint,
         CompileOnly,
         InterpretOnly,
         None
@@ -25,17 +25,17 @@ public:
     OptionalFilepath input;
 
     ArgParser(int argc, char **argv)
-            : verbose(false), mode(Mode::None), input() {
+            : verbose(false), prettyPrint(false), mode(Mode::None), input() {
         for (int i = 0; i < argc; i++) {
             args.emplace_back(argv[i]);
         }
 
         this->verbose = optionExists("-v");
+        this->prettyPrint = optionExists("-p");
         if (optionExists("-h") || optionExists("--help")) {
             printHelpAndExit(0);
         }
 
-        setModeIfExistsFlag("-p", Mode::PrettyPrint);
         setModeIfExistsFlag("-c", Mode::CompileOnly);
         setModeIfExistsFlag("-b", Mode::InterpretOnly);
         if (args.back() != "-p" &&
@@ -159,9 +159,10 @@ int execute(const std::string &input, bool verbose) {
 int main(int argc, char *argv[]) {
     ArgParser argParser(argc, argv);
     if (argParser.input.first) {
+        if (argParser.prettyPrint) {
+            return prettyPrint(argParser.input.second);
+        }
         switch (argParser.mode) {
-            case ArgParser::Mode::PrettyPrint:
-                return prettyPrint(argParser.input.second);
             case ArgParser::Mode::CompileOnly:
                 return compile(argParser.input.second, argParser.verbose);
             case ArgParser::Mode::InterpretOnly:
@@ -172,9 +173,11 @@ int main(int argc, char *argv[]) {
     } else {
         // run REPL
         Interpreter interp;
+        PrettyPrinter pp;
         std::cout << "Input some code! Type `fin` when you're done." << std::endl;
         while (true) {
             std::string source;
+            std::cout << ">>";
             std::getline(std::cin, source);
             if (source == "fin") {
                 break;
@@ -197,6 +200,9 @@ int main(int argc, char *argv[]) {
                 if (ast == nullptr) {
                     break;
                 } else {
+                    if (argParser.prettyPrint) {
+                        ast->accept(&pp);
+                    }
                     ast->accept(&interp);
                 }
             }
