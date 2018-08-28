@@ -13,7 +13,8 @@ class Interpreter : public Visitor {
         Integer,
         Boolean,
         String,
-        Function
+        Function,
+        Nil
     };
 
     struct DurianObject {
@@ -25,6 +26,8 @@ class Interpreter : public Visitor {
             bool bval;
             char sval[1024];
         } value;
+
+        explicit DurianObject() : type(DurianType::Nil) {}
 
         explicit DurianObject(double dval) : type(DurianType::Double) {
             value.dval = dval;
@@ -51,18 +54,14 @@ class Interpreter : public Visitor {
     };
 
     struct ControlFlowException : public std::exception {
-    };
+        enum struct Type {
+            Break,
+            Next,
+            Return,
+        } type;
+        DurianObject attachedVal;
 
-    struct BreakException : public ControlFlowException {
-    };
-
-    struct NextException : public ControlFlowException {
-    };
-
-    struct ReturnException : public ControlFlowException {
-        DurianObject val;
-
-        explicit ReturnException(DurianObject val) : val(val) {}
+        ControlFlowException(Type type, DurianObject val) : type(type), attachedVal(val) {}
     };
 
     class Environment {

@@ -249,7 +249,7 @@ void Interpreter::visit(AST::BooleanLit *node) {
 }
 
 void Interpreter::visit(AST::BreakStmt *) {
-    throw BreakException();
+    throw ControlFlowException(ControlFlowException::Type::Break, DurianObject());
 }
 
 void Interpreter::visit(AST::ErrStmt *node) {
@@ -308,7 +308,7 @@ void Interpreter::visit(AST::LetStmt *node) {
 }
 
 void Interpreter::visit(AST::NextStmt *) {
-    throw NextException();
+    throw ControlFlowException(ControlFlowException::Type::Next, DurianObject());
 }
 
 void Interpreter::visit(AST::PrintStmt *node) {
@@ -324,7 +324,7 @@ void Interpreter::visit(AST::ReturnStmt *node) {
     node->m_expr->accept(this);
     auto val = m_dataStack.top();
     m_dataStack.pop();
-    throw ReturnException(val);
+    throw ControlFlowException(ControlFlowException::Type::Return, val);
 }
 
 void Interpreter::visit(AST::ScanStmt *node) {
@@ -361,7 +361,7 @@ void Interpreter::visit(AST::UnaryExpr *node) {
             m_dataStack.push(DurianObject(!operand.isTruthy()));
             break;
         default:
-            // TODO throw exception
+            assert(false);
             break;
     }
 }
@@ -376,17 +376,14 @@ void Interpreter::visit(AST::WhileStmt *node) {
             try {
                 node->m_body->accept(this);
             } catch (const ControlFlowException &e) {
-                try {
-                    auto &be = dynamic_cast<const BreakException &>(e);
-                    tmp = false;
-                } catch (const std::bad_cast &bc) {
-                    try {
-                        auto &ne = dynamic_cast<const NextException &>(e);
+                switch (e.type) {
+                    case ControlFlowException::Type::Break:
+                        tmp = false;
+                        break;
+                    case ControlFlowException::Type::Next:
                         continue;
-                    }
-                    catch (const std::bad_cast &bc) {
+                    case ControlFlowException::Type::Return:
                         throw e;
-                    }
                 }
             }
         } else {
